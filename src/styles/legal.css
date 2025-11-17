@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Verve Dark Theme - Deep blacks and charcoal */
+    --background: 0 0% 10%;
+    --foreground: 0 0% 100%;
+
+    --card: 0 0% 16%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 100%;
+
+    /* Bright blue accent */
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 0 0% 82%;
+
+    --muted: 0 0% 18%;
+    --muted-foreground: 220 9% 46%;
+
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Status colors */
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Subtle borders */
+    --border: 0 0% 28%;
+    --input: 0 0% 20%;
+    --ring: 217 91% 60%;
+
+    --radius: 0.75rem;
+
+    /* Text hierarchy */
+    --text-primary: 0 0% 100%;
+    --text-secondary: 220 9% 82%;
+    --text-muted: 220 9% 46%;
+    --text-subtle: 220 9% 42%;
+
+    /* Panel backgrounds */
+    --panel-dark: 0 0% 6%;
+    --panel-darker: 0 0% 12%;
+    --panel-card: 0 0% 16%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}

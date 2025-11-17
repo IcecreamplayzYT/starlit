@@ -1,0 +1,41 @@
+# Node modules
+node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+logs/
+*.log
+
+# Build output
+dist/
+build/
+.cache/
+.out/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# PM2 logs
+.pm2/logs/
+.pm2/pids/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Editor junk
+.vscode/
+.idea/
+
+# TypeScript
+*.tsbuildinfo
+
