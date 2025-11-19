@@ -11,6 +11,7 @@ import analyticsRoutes from './routes/analytics.js';
 import adminRoutes from './routes/admin.js';
 import roleRoutes from './routes/roles.js';
 import shortlistRoutes from './routes/shortlists.js';
+import likeRoutes from './routes/likes.js';
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/roles', roleRoutes);
 app.use('/api/shortlists', shortlistRoutes);
+app.use('/api/likes', likeRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
