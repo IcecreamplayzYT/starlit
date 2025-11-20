@@ -270,7 +270,7 @@ export default function Index() {
             </div>
             
             <h1 className="text-6xl md:text-8xl font-bold mb-6 text-gradient animate-scale-in">
-              STARLIT
+              starlit
             </h1>
             
             <div className="flex items-center justify-center space-x-2 mb-8 animate-fade-in" style={{ animationDelay: '0.2s' }}>

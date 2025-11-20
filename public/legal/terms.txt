@@ -1,19 +1,18 @@
 ### 1. Acceptance of Terms
 
-By accessing or using Verve Customs Hosting services, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any part of these terms, you may not use our services.
+By accessing or using starlit.you services, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any part of these terms, you may not use our services.
 
-These terms constitute a legally binding agreement between you and Verve Customs Hosting. Your continued use of our services signifies your acceptance of any updates or modifications to these terms.
+These terms constitute a legally binding agreement between you and starlit.you. Your continued use of our services signifies your acceptance of any updates or modifications to these terms.
 
 ---
 
 ### 2. Service Description
 
-Verve Customs Hosting provides managed hosting solutions including but not limited to:
+starlit.you provides biolink designer portfolios including but not limited to:
 
-* Virtual Servers (techincally known as dockers)
-* Game server hosting and management 
-* Web hosting and domain management (available to paid tier alone)
-* Custom server configurations and support
+* Biolinks
+* Portfolios
+* Discovery pages
 
 We reserve the right to modify, suspend, or discontinue any aspect of our services at any time with reasonable notice to customers.
 
@@ -28,7 +27,7 @@ To use our services, you must create an account by providing accurate and comple
 * Notifying us immediately of any unauthorized access
 * Keeping your contact information up to date
 
-You must be at least **13 years old** or have parental consent to create an account and use our services.
+You must be at least **13 years old** to create an account and use our services.
 
 ---
 
@@ -46,14 +45,7 @@ All services are billed according to the plan you select. Payment terms include:
 
 ### 5. Refund Policy
 
-We offer a **7-day money-back guarantee** for new customers on most hosting plans. Refund conditions:
-
-* Refund requests must be made within 7 days of initial purchase
-* Only applies to first-time customers and first-time orders
-* Domain registrations and setup fees are non-refundable
-* Refunds are processed within 5-10 business days to the original payment method
-
-Dedicated servers and custom configurations may have different refund terms outlined at time of purchase.
+We do not offer **refunds**
 
 ---
 
@@ -103,7 +95,7 @@ You retain all rights to content you upload or store on our servers. However, yo
 * Permission to access content if required by law or to investigate violations
 * Permission to investigate internally and filter through data automatically to scan for bad actors
 
-All Verve Customs Hosting branding, logos, and proprietary technology remain our exclusive property. You may not use our trademarks without written permission.
+All starlit.you branding, logos, and proprietary technology remain our exclusive property. You may not use our trademarks without written permission.
 
 ---
 
@@ -122,7 +114,7 @@ For complete information about how we handle your data, please review our [Priva
 
 ### 11. Limitation of Liability
 
-To the maximum extent permitted by law, Verve Customs Hosting shall not be liable for:
+To the maximum extent permitted by law, starlit.you shall not be liable for:
 
 * Indirect, incidental, special, consequential, or punitive damages
 * Loss of profits, revenue, data, or business opportunities
@@ -142,7 +134,7 @@ Either party may terminate this agreement:
 * Non-payment or fraudulent activity will result in immediate suspension
 * We provide 30 days notice for termination without cause
 
-Upon termination, data is deleted instantly, prior notice will be gived before termination. No refunds are provided for partial billing periods except as outlined in our refund policy.
+Upon termination, data is deleted instantly. No refunds are provided for partial billing periods.
 
 ---
 
@@ -160,7 +152,7 @@ Continued use of our services after changes constitutes acceptance of the modifi
 
 ### 14. Governing Law
 
-These Terms of Service shall be governed by and construed in accordance with the laws of the jurisdiction where Verve Customs Hosting is incorporated, without regard to conflict of law principles.
+These Terms of Service shall be governed by and construed in accordance with the laws of the jurisdiction where starlit.you is incorporated, without regard to conflict of law principles.
 
 Any disputes arising from these terms or our services shall be resolved through binding arbitration in accordance with the rules of the American Arbitration Association, except where prohibited by law.
 
@@ -168,7 +160,4 @@ Any disputes arising from these terms or our services shall be resolved through 
 
 ### 15. Contact Information
 
-For questions about these Terms of Service or our services, please contact our staff team:
-* **Discord server:** [neodesigns](https://discord.com/neodesigns)
-
-**Response Time:** We aim to respond to all inquiries within 2-3 days
+For questions about these Terms of Service or our services, please contact our [legal team](mailto:legal@starlit.you).
