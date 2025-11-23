@@ -1,11 +1,13 @@
 // import { useState, useEffect } from 'react'
 // import { useNavigate } from 'react-router-dom'
-// import { ArrowLeft, ArrowRight, Star, Sparkles } from 'lucide-react'
+// import { ArrowLeft, ArrowRight, Star, Sparkles, X, Plus, Mail, Phone, MessageSquare, ExternalLink } from 'lucide-react'
 // import { Button } from '@/components/ui/button'
 // import { Input } from '@/components/ui/input'
 // import { Textarea } from '@/components/ui/textarea'
 // import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 // import { Progress } from '@/components/ui/progress'
+// import { Scrollwheel } from '@/components/ui/scrollwheel'
+// import { Badge } from '@/components/ui/badge'
 // import { useAuth } from '@/hooks/useAuth'
 // import { useToast } from '@/hooks/use-toast'
 // import { api } from '@/lib/api'
@@ -27,82 +29,50 @@
 //   'React', 'Vue', 'TypeScript', 'Python', 'Cinema 4D', 'InDesign',
 //   'Canva', 'Photopea', 'Adobe Express', 'JavaScript', 'NodeJS',
 //   'Adobe XD', 'InVision', 'Affinity Designer', 'GIMP', 'Inkscape',
-//   'CorelDRAW', 'Krita', 'Vectr', 'Gravit Designer', 'Lunacy',
-//   'Procreate', 'Clip Studio Paint', 'MediBang Paint', 'FireAlpaca',
-//   'Maya', '3ds Max', 'Houdini', 'ZBrush', 'Substance Painter',
-//   'Rhino', 'Fusion 360', 'Tinkercad', 'SketchUp', 'AutoCAD',
-//   'Premiere Pro', 'Final Cut Pro', 'DaVinci Resolve', 'Adobe Animate', 'Toon Boom',
-//   'Angular', 'Svelte', 'Next.js', 'Nuxt.js', 'Gatsby',
-//   'Ember.js', 'Backbone.js', 'jQuery', 'HTML', 'CSS',
-//   'Sass', 'Less', 'Bootstrap', 'Tailwind CSS', 'Material-UI',
-//   'Ant Design', 'Chakra UI', 'Bulma', 'Foundation', 'Semantic UI',
-//   'Java', 'C++', 'C#', 'Ruby', 'Go',
-//   'Swift', 'Kotlin', 'PHP', 'Scala', 'Rust',
-//   'Dart', 'Flutter', 'Express.js', 'Koa.js', 'NestJS',
-//   'Django', 'Flask', 'Ruby on Rails', 'Laravel', 'Spring Boot',
-//   'ASP.NET', 'Git', 'GitHub', 'VS Code', 'IntelliJ IDEA',
-//   'Eclipse', 'Android Studio', 'Xcode', 'Postman', 'Docker',
-//   'Kubernetes', 'AWS', 'Azure', 'Google Cloud', 'Firebase',
-//   'MongoDB', 'MySQL', 'PostgreSQL', 'SQLite', 'Redis',
-//   'GraphQL', 'Apollo', 'Prisma', 'TensorFlow', 'PyTorch',
-//   'Scikit-learn', 'Keras', 'Unity', 'Unreal Engine', 'Godot',
-//   'Three.js', 'Babylon.js', 'Webpack', 'Vite', 'Parcel',
-//   'Rollup', 'ESLint', 'Prettier', 'Jest', 'Mocha',
-//   'Cypress', 'Selenium', 'Jenkins', 'Travis CI', 'CircleCI',
-//   'GitLab CI', 'Bitbucket', 'Notion', 'Trello', 'Jira',
-//   'Asana', 'Slack', 'Discord', 'Zoom', 'Microsoft Teams',
-//   'FigJam', 'Miro', 'Adobe Lightroom', 'Capture One', 'Affinity Photo',
-//   'Pixelmator', 'Paint.NET', 'SumoPaint', 'Autodesk Maya', 'Modo',
-//   'Lightwave 3D', 'Sculptris', 'Meshmixer', 'FreeCAD', 'Onshape',
-//   'HitFilm Express', 'Blender Video Editor', 'Synfig Studio', 'Pencil2D', 'OpenToonz',
-//   'Elm', 'ClojureScript', 'Meteor', 'Deno', 'FastAPI',
-//   'SQLAlchemy', 'Symfony', 'CodeIgniter', 'Yii', 'Zend Framework',
-//   'Heroku', 'Netlify', 'Vercel', 'DigitalOcean', 'Linode',
-//   'Oracle DB', 'Cassandra', 'CouchDB', 'Neo4j', 'Elasticsearch',
-//   'SpaCy', 'NLTK', 'Hugging Face', 'OpenCV', 'Pillow',
-//   'CryEngine', 'Lumberyard', 'A-Frame', 'PlayCanvas', 'Phaser',
-//   'Babel', 'Ansible', 'Puppet', 'Chef',
-//   'Prometheus', 'Grafana', 'ELK Stack', 'Splunk', 'New Relic',
-//   'Fivetran', 'Airbyte', 'dbt', 'Snowflake', 'BigQuery',
-//   'Redshift', 'Athena', 'Databricks', 'Spark', 'Hadoop',
-//   'Kafka', 'RabbitMQ', 'ActiveMQ', 'NATS', 'ZeroMQ',
-//   'Terraform', 'Pulumi', 'CloudFormation', 'ARM Templates', ' CDK',
-//   'Serverless Framework', 'SAM', 'Amplify', 'AppSync', 'Cognito',
-//   'Lambda', 'EC2', 'S3', 'RDS', 'DynamoDB',
-//   'EKS', 'ECS', 'Fargate', 'API Gateway', 'SQS',
-//   'SNS', 'Step Functions', 'EventBridge', 'Kinesis', 'Firehose',
-//   'Glue', 'EMR', 'SageMaker', 'Rekognition', 'Comprehend',
-//   'Textract', 'Polly', 'Translate', 'Lex', 'Connect',
-//   'Quarkus', 'Micronaut', 'Vert.x', 'Akka', 'Play Framework',
-//   'Grails', 'Dropwizard', 'Jersey', 'Restlet', 'Spark Java',
-//   'Gin', 'Echo', 'Beego', 'Revel', 'Buffalo',
-//   'Actix', 'Rocket', 'Warp', 'Tide', 'Poem',
-//   'Axum', 'Tokio', 'Hyper', 'Reqwest', 'Serde',
-//   'Nom', 'Pest', 'Lalrpop', 'Rusqlite', 'Diesel',
-//   'Sqlx', 'SeaORM', 'Prisma (Rust)', 'Tauri', 'Druid',
-//   'Iced', 'VGTK', 'Relm', 'GTK-RS', 'Qt for Rust',
-//   'SwiftUI', 'UIKit', 'AppKit', 'Combine', 'RealityKit',
-//   'ARKit', 'SceneKit', 'SpriteKit', 'Metal', 'Core Data',
-//   'Realm', 'Firebase iOS', 'Alamofire', 'Kingfisher', 'SnapKit',
-//   'RxSwift', 'PromiseKit', 'Moya', 'SwiftyJSON', 'Charts',
-//   'Lottie', 'Hero', 'SkeletonView', 'FSCalendar', 'JTAppleCalendar',
-//   'Koloda', 'Eureka', 'XLForm', 'IQKeyboardManager', 'SideMenu'
+//   'HTML', 'CSS', 'Sass', 'Bootstrap', 'Tailwind CSS', 'Unity', 'Unreal Engine',
+//   'Visual Studio Code', 'Adobe Illustrator', 'Adobe Photoshop'
 // ].sort()
+
+// const THEMES = [
+//   { name: 'Blue', primary: '#3B82F6', secondary: '#8B5CF6' },
+//   { name: 'Purple', primary: '#8B5CF6', secondary: '#EC4899' },
+//   { name: 'Green', primary: '#10B981', secondary: '#3B82F6' },
+//   { name: 'Red', primary: '#EF4444', secondary: '#F59E0B' },
+//   { name: 'Orange', primary: '#F97316', secondary: '#EF4444' }
+// ]
 
 // export default function Onboarding() {
 //   const [step, setStep] = useState(1)
 //   const [loading, setLoading] = useState(false)
 //   const [roleSearchTerm, setRoleSearchTerm] = useState('')
-//   const [searchTerm, setSearchTerm] = useState('')
+//   const [toolSearchTerm, setToolSearchTerm] = useState('')
+//   const [newImage, setNewImage] = useState('')
+//   const [newContact, setNewContact] = useState({ type: 'email', value: '', label: '' })
+  
 //   const [formData, setFormData] = useState({
-//     name: '',
+//     username: '',
+//     displayName: '',
 //     slug: '',
 //     role: '',
 //     tools: [] as string[],
 //     headline: '',
 //     bio: '',
+//     description: '',
 //     location: '',
-//     website: ''
+//     website: '',
+//     github: '',
+//     linkedin: '',
+//     twitter: '',
+//     avatarUrl: '',
+//     bannerUrl: '',
+//     profileImages: [] as string[],
+//     contactMethods: [] as Array<{ type: string; value: string; label: string }>,
+//     customization: {
+//       primaryColor: '#3B82F6',
+//       secondaryColor: '#8B5CF6',
+//       positioning: 'center',
+//       theme: 'blue'
+//     }
 //   })
 
 //   const { user } = useAuth()
@@ -115,7 +85,7 @@
 //     }
 //   }, [user, navigate])
 
-//   const totalSteps = 5
+//   const totalSteps = 9
 //   const progress = (step / totalSteps) * 100
 
 //   const handleNext = () => {
@@ -138,14 +108,23 @@
 //       .replace(/[^a-z0-9\s-]/g, '')
 //       .replace(/\s+/g, '-')
 //       .replace(/-+/g, '-')
+//       .replace(/^-+|-+$/g, '')
 //       .trim()
 //   }
 
-//   const handleNameChange = (value: string) => {
+//   const handleUsernameChange = (value: string) => {
+//     const sanitized = generateSlug(value)
 //     setFormData(prev => ({
 //       ...prev,
-//       name: value,
-//       slug: generateSlug(value)
+//       username: sanitized,
+//       slug: sanitized
+//     }))
+//   }
+
+//   const handleDisplayNameChange = (value: string) => {
+//     setFormData(prev => ({
+//       ...prev,
+//       displayName: value
 //     }))
 //   }
 
@@ -158,7 +137,78 @@
 //     }))
 //   }
 
+//   const validateUrl = (url: string): boolean => {
+//     if (!url) return true
+//     try {
+//       new URL(url)
+//       return true
+//     } catch {
+//       return false
+//     }
+//   }
+
+//   const handleAddImage = () => {
+//     if (!newImage.trim()) return
+    
+//     if (!validateUrl(newImage)) {
+//       toast({
+//         title: "Invalid URL",
+//         description: "Please enter a valid image URL",
+//         variant: "destructive"
+//       })
+//       return
+//     }
+    
+//     if (formData.profileImages.length >= 5) {
+//       toast({
+//         title: "Image limit reached",
+//         description: "You can only have 5 images during onboarding",
+//         variant: "destructive"
+//       })
+//       return
+//     }
+
+//     setFormData(prev => ({
+//       ...prev,
+//       profileImages: [...prev.profileImages, newImage]
+//     }))
+//     setNewImage('')
+//   }
+
+//   const handleRemoveImage = (index: number) => {
+//     setFormData(prev => ({
+//       ...prev,
+//       profileImages: prev.profileImages.filter((_, i) => i !== index)
+//     }))
+//   }
+
+//   const handleAddContact = () => {
+//     if (!newContact.value.trim()) return
+    
+//     setFormData(prev => ({
+//       ...prev,
+//       contactMethods: [...prev.contactMethods, { ...newContact }]
+//     }))
+//     setNewContact({ type: 'email', value: '', label: '' })
+//   }
+
+//   const handleRemoveContact = (index: number) => {
+//     setFormData(prev => ({
+//       ...prev,
+//       contactMethods: prev.contactMethods.filter((_, i) => i !== index)
+//     }))
+//   }
+
 //   const handleSubmit = async () => {
+//     if (formData.website && !validateUrl(formData.website)) {
+//       toast({
+//         title: "Invalid URL",
+//         description: "Please enter a valid website URL",
+//         variant: "destructive"
+//       })
+//       return
+//     }
+
 //     setLoading(true)
 //     try {
 //       const response = await api.post('/profiles', formData)
@@ -180,12 +230,26 @@
 
 //   const canContinue = () => {
 //     switch (step) {
-//       case 1: return formData.name.trim() && formData.slug.trim()
+//       case 1: return formData.username.trim() && formData.displayName.trim()
 //       case 2: return formData.role.trim()
 //       case 3: return formData.tools.length > 0
 //       case 4: return formData.headline.trim()
-//       case 5: return true
+//       case 5: return formData.description.trim()
+//       case 6: return true
+//       case 7: return true
+//       case 8: return true
+//       case 9: return true
 //       default: return false
+//     }
+//   }
+
+//   const getContactIcon = (type: string) => {
+//     switch (type) {
+//       case 'email': return <Mail className="h-4 w-4" />
+//       case 'phone': return <Phone className="h-4 w-4" />
+//       case 'discord': return <MessageSquare className="h-4 w-4" />
+//       case 'telegram': return <MessageSquare className="h-4 w-4" />
+//       default: return <ExternalLink className="h-4 w-4" />
 //     }
 //   }
 
@@ -200,35 +264,51 @@
 //             </div>
 //             <div className="space-y-4">
 //               <div>
-//                 <label className="block text-sm font-medium mb-2">Username</label>
+//                 <label className="block text-sm font-medium mb-2">
+//                   Username <span className="text-destructive">*</span>
+//                 </label>
 //                 <Input
-//                   value={formData.name}
-//                   onChange={(e) => handleNameChange(e.target.value)}
-//                   placeholder="Enter your username"
+//                   value={formData.username}
+//                   onChange={(e) => handleUsernameChange(e.target.value)}
+//                   placeholder="yourusername"
 //                   autoFocus
 //                 />
+//                 <p className="text-xs text-muted-foreground mt-1">
+//                   Only letters, numbers, and dashes. This cannot be changed later.
+//                 </p>
 //               </div>
 //               <div>
-//                 <label className="block text-sm font-medium mb-2">Your URL</label>
+//                 <label className="block text-sm font-medium mb-2">
+//                   Display Name <span className="text-destructive">*</span>
+//                 </label>
+//                 <Input
+//                   value={formData.displayName}
+//                   onChange={(e) => handleDisplayNameChange(e.target.value)}
+//                   placeholder="Your Display Name"
+//                 />
+//                 <p className="text-xs text-muted-foreground mt-1">
+//                   This is how your name will appear on your profile
+//                 </p>
+//               </div>
+//               <div>
+//                 <label className="block text-sm font-medium mb-2">Your URL Preview</label>
 //                 <div className="flex items-center space-x-2">
-//                   <span className="text-muted-foreground">starlit.you/</span>
+//                   <span className="text-muted-foreground text-sm">starlit.you/profile/</span>
 //                   <Input
 //                     value={formData.slug}
-//                     onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
-//                     placeholder="your-name"
-//                     className="flex-1"
+//                     disabled
+//                     className="flex-1 bg-muted"
 //                   />
 //                 </div>
-//                 <p className="text-xs text-muted-foreground mt-1">
-//                   Only letters, numbers, and dashes allowed
-//                 </p>
 //               </div>
 //             </div>
 //           </div>
 //         )
 
 //       case 2:
-//         const filteredRoles = ROLES.filter(role => role.toLowerCase().includes(roleSearchTerm.toLowerCase()))
+//         const filteredRoles = ROLES.filter(role => 
+//           role.toLowerCase().includes(roleSearchTerm.toLowerCase())
+//         )
 //         return (
 //           <div className="space-y-6">
 //             <div className="text-center">
@@ -243,58 +323,75 @@
 //                 placeholder="Search roles..."
 //               />
 //             </div>
-//             <div className="grid grid-cols-2 gap-3 max-h-80 overflow-y-auto">
-//               {filteredRoles.map((role) => (
-//                 <button
-//                   key={role}
-//                   onClick={() => setFormData(prev => ({ ...prev, role }))}
-//                   className={`p-4 rounded-lg border-2 text-left transition-all duration-300 hover:scale-105 ${
-//                     formData.role === role
-//                       ? 'border-primary-glow bg-primary/10 shadow-glow-sm'
-//                       : 'border-border hover:border-primary/50'
-//                   }`}
-//                 >
-//                   <div className="font-medium">{role}</div>
-//                 </button>
-//               ))}
-//             </div>
+//             <Scrollwheel maxHeight="450px">
+//               <div className="grid grid-cols-2 gap-3 p-2">
+//                 {filteredRoles.length > 0 ? (
+//                   filteredRoles.map((role) => (
+//                     <button
+//                       key={role}
+//                       type="button"
+//                       onClick={() => setFormData(prev => ({ ...prev, role }))}
+//                       className={`p-4 rounded-lg border-2 text-left transition-all duration-300 hover:scale-105 ${
+//                         formData.role === role
+//                           ? 'border-primary-glow bg-primary/10 shadow-glow-sm'
+//                           : 'border-border hover:border-primary/50'
+//                       }`}
+//                     >
+//                       <div className="font-medium">{role}</div>
+//                     </button>
+//                   ))
+//                 ) : (
+//                   <div className="col-span-2 text-center text-muted-foreground py-8">
+//                     No roles found
+//                   </div>
+//                 )}
+//               </div>
+//             </Scrollwheel>
 //           </div>
 //         )
 
 //       case 3:
-//         const filteredTools = TOOLS.filter(tool => tool.toLowerCase().includes(searchTerm.toLowerCase()))
+//         const filteredTools = TOOLS.filter(tool => 
+//           tool.toLowerCase().includes(toolSearchTerm.toLowerCase())
+//         )
 //         return (
 //           <div className="space-y-6">
 //             <div className="text-center">
 //               <h2 className="text-2xl font-semibold mb-2">Your tools</h2>
-//               <p className="text-muted-foreground">Select the tools you use (choose multiple)</p>
+//               <p className="text-muted-foreground">Select the tools you use</p>
 //             </div>
 //             <div>
-//               <label className="block text-sm font-medium mb-2">Search tools</label>
 //               <Input
-//                 value={searchTerm}
-//                 onChange={(e) => setSearchTerm(e.target.value)}
+//                 value={toolSearchTerm}
+//                 onChange={(e) => setToolSearchTerm(e.target.value)}
 //                 placeholder="Search tools..."
 //               />
 //             </div>
-//             <div className="grid grid-cols-3 gap-3 max-h-80 overflow-y-auto">
-//               {filteredTools.map((tool) => (
-//                 <button
-//                   key={tool}
-//                   onClick={() => handleToolToggle(tool)}
-//                   className={`p-3 rounded-lg border-2 text-center transition-all duration-300 hover:scale-105 ${
-//                     formData.tools.includes(tool)
-//                       ? 'border-primary-glow bg-primary/10 shadow-glow-sm'
-//                       : 'border-border hover:border-primary/50'
-//                   }`}
-//                 >
-//                   <div className="text-sm font-medium">{tool}</div>
-//                 </button>
-//               ))}
-//             </div>
-//             <p className="text-center text-sm text-muted-foreground">
-//               Selected: {formData.tools.length} tools
-//             </p>
+//             <Scrollwheel maxHeight="450px">
+//               <div className="grid grid-cols-3 gap-3 p-2">
+//                 {filteredTools.map((tool) => (
+//                   <button
+//                     key={tool}
+//                     type="button"
+//                     onClick={() => handleToolToggle(tool)}
+//                     className={`p-3 rounded-lg border-2 text-center transition-all ${
+//                       formData.tools.includes(tool)
+//                         ? 'border-primary-glow bg-primary/10'
+//                         : 'border-border'
+//                     }`}
+//                   >
+//                     <div className="text-sm font-medium">{tool}</div>
+//                   </button>
+//                 ))}
+//               </div>
+//             </Scrollwheel>
+//             {formData.tools.length > 0 && (
+//               <div className="text-center">
+//                 <p className="text-sm text-muted-foreground">
+//                   Selected: {formData.tools.length}
+//                 </p>
+//               </div>
+//             )}
 //           </div>
 //         )
 
@@ -302,35 +399,19 @@
 //         return (
 //           <div className="space-y-6">
 //             <div className="text-center">
-//               <h2 className="text-2xl font-semibold mb-2">Tell your story</h2>
-//               <p className="text-muted-foreground">Help others understand what you do</p>
+//               <h2 className="text-2xl font-semibold mb-2">Your headline</h2>
+//               <p className="text-muted-foreground">A short, catchy intro</p>
 //             </div>
-//             <div className="space-y-4">
-//               <div>
-//                 <label className="block text-sm font-medium mb-2">Headline</label>
-//                 <Input
-//                   value={formData.headline}
-//                   onChange={(e) => setFormData(prev => ({ ...prev, headline: e.target.value }))}
-//                   placeholder="e.g., UI/UX Designer crafting beautiful experiences"
-//                   maxLength={100}
-//                 />
-//                 <p className="text-xs text-muted-foreground mt-1">
-//                   {formData.headline.length}/100 characters
-//                 </p>
-//               </div>
-//               <div>
-//                 <label className="block text-sm font-medium mb-2">Bio (Optional)</label>
-//                 <Textarea
-//                   value={formData.bio}
-//                   onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
-//                   placeholder="Tell us about yourself, your experience, and what you're passionate about..."
-//                   maxLength={500}
-//                   rows={4}
-//                 />
-//                 <p className="text-xs text-muted-foreground mt-1">
-//                   {formData.bio.length}/500 characters
-//                 </p>
-//               </div>
+//             <div>
+//               <Input
+//                 value={formData.headline}
+//                 onChange={(e) => setFormData(prev => ({ ...prev, headline: e.target.value }))}
+//                 placeholder="e.g., UI/UX Designer crafting beautiful experiences"
+//                 maxLength={100}
+//               />
+//               <p className="text-xs text-muted-foreground mt-1">
+//                 {formData.headline.length}/100
+//               </p>
 //             </div>
 //           </div>
 //         )
@@ -339,25 +420,281 @@
 //         return (
 //           <div className="space-y-6">
 //             <div className="text-center">
-//               <h2 className="text-2xl font-semibold mb-2">Almost done!</h2>
-//               <p className="text-muted-foreground">Just a few more details</p>
+//               <h2 className="text-2xl font-semibold mb-2">Tell your story</h2>
+//               <p className="text-muted-foreground">About you</p>
 //             </div>
 //             <div className="space-y-4">
 //               <div>
-//                 <label className="block text-sm font-medium mb-2">Location (Optional)</label>
+//                 <Textarea
+//                   value={formData.description}
+//                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+//                   placeholder="Tell us about yourself..."
+//                   maxLength={1000}
+//                   rows={6}
+//                   className="resize-none"
+//                 />
+//                 <p className="text-xs text-muted-foreground mt-1">
+//                   {formData.description.length}/1000
+//                 </p>
+//               </div>
+//               <div>
+//                 <Textarea
+//                   value={formData.bio}
+//                   onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
+//                   placeholder="Quick summary (optional)"
+//                   maxLength={500}
+//                   rows={3}
+//                   className="resize-none"
+//                 />
+//                 <p className="text-xs text-muted-foreground mt-1">
+//                   {formData.bio.length}/500
+//                 </p>
+//               </div>
+//             </div>
+//           </div>
+//         )
+
+//       case 6:
+//         return (
+//           <div className="space-y-6">
+//             <div className="text-center">
+//               <h2 className="text-2xl font-semibold mb-2">Profile Pictures</h2>
+//               <p className="text-muted-foreground">Add your images</p>
+//             </div>
+            
+//             <div className="bg-muted/50 p-3 rounded-lg">
+//               <p className="text-xs text-muted-foreground">
+//                 Use <a href="https://imgur.com" target="_blank" className="text-primary">Imgur</a> or <a href="https://imgbb.com" target="_blank" className="text-primary">ImgBB</a>
+//               </p>
+//             </div>
+
+//             <div className="space-y-4">
+//               <div>
+//                 <label className="text-sm font-medium">Avatar URL</label>
+//                 <Input
+//                   value={formData.avatarUrl}
+//                   onChange={(e) => setFormData(prev => ({ ...prev, avatarUrl: e.target.value }))}
+//                   placeholder="https://i.imgur.com/avatar.jpg"
+//                 />
+//               </div>
+
+//               <div>
+//                 <label className="text-sm font-medium">Banner URL</label>
+//                 <Input
+//                   value={formData.bannerUrl}
+//                   onChange={(e) => setFormData(prev => ({ ...prev, bannerUrl: e.target.value }))}
+//                   placeholder="https://i.imgur.com/banner.jpg"
+//                 />
+//               </div>
+
+//               <div>
+//                 <label className="text-sm font-medium">Gallery <Badge variant="secondary">{formData.profileImages.length}/5</Badge></label>
+//                 <div className="flex gap-2 mb-2">
+//                   <Input
+//                     value={newImage}
+//                     onChange={(e) => setNewImage(e.target.value)}
+//                     placeholder="Image URL"
+//                   />
+//                   <Button type="button" onClick={handleAddImage} size="sm">
+//                     <Plus className="h-4 w-4" />
+//                   </Button>
+//                 </div>
+                
+//                 {formData.profileImages.length > 0 && (
+//                   <div className="grid grid-cols-3 gap-2">
+//                     {formData.profileImages.map((img, idx) => (
+//                       <div key={idx} className="relative group">
+//                         <img src={img} alt="" className="w-full h-24 object-cover rounded" />
+//                         <button
+//                           type="button"
+//                           onClick={() => handleRemoveImage(idx)}
+//                           className="absolute top-1 right-1 p-1 bg-destructive rounded-full opacity-0 group-hover:opacity-100"
+//                         >
+//                           <X className="h-3 w-3 text-white" />
+//                         </button>
+//                       </div>
+//                     ))}
+//                   </div>
+//                 )}
+//               </div>
+//             </div>
+//           </div>
+//         )
+
+//       case 7:
+//         return (
+//           <div className="space-y-6">
+//             <div className="text-center">
+//               <h2 className="text-2xl font-semibold mb-2">Contact Methods</h2>
+//               <p className="text-muted-foreground">How can people reach you?</p>
+//             </div>
+
+//             <div className="space-y-4">
+//               <div className="flex gap-2">
+//                 <select
+//                   value={newContact.type}
+//                   onChange={(e) => setNewContact(prev => ({ ...prev, type: e.target.value }))}
+//                   className="px-3 py-2 rounded-lg border-2 border-border bg-background"
+//                 >
+//                   <option value="email">Email</option>
+//                   <option value="phone">Phone</option>
+//                   <option value="discord">Discord</option>
+//                   <option value="telegram">Telegram</option>
+//                   <option value="other">Other</option>
+//                 </select>
+//                 <Input
+//                   value={newContact.value}
+//                   onChange={(e) => setNewContact(prev => ({ ...prev, value: e.target.value }))}
+//                   placeholder="Value"
+//                   className="flex-1"
+//                 />
+//                 <Button type="button" onClick={handleAddContact} size="sm">
+//                   <Plus className="h-4 w-4" />
+//                 </Button>
+//               </div>
+
+//               {formData.contactMethods.length > 0 && (
+//                 <div className="space-y-2">
+//                   {formData.contactMethods.map((contact, idx) => (
+//                     <div key={idx} className="flex items-center justify-between p-3 border rounded-lg">
+//                       <div className="flex items-center space-x-2">
+//                         {getContactIcon(contact.type)}
+//                         <div>
+//                           <p className="text-sm capitalize">{contact.type}</p>
+//                           <p className="text-xs text-muted-foreground">{contact.value}</p>
+//                         </div>
+//                       </div>
+//                       <Button
+//                         type="button"
+//                         variant="ghost"
+//                         size="sm"
+//                         onClick={() => handleRemoveContact(idx)}
+//                       >
+//                         <X className="h-4 w-4" />
+//                       </Button>
+//                     </div>
+//                   ))}
+//                 </div>
+//               )}
+//             </div>
+//           </div>
+//         )
+
+//       case 8:
+//         return (
+//           <div className="space-y-6">
+//             <div className="text-center">
+//               <h2 className="text-2xl font-semibold mb-2">Customize</h2>
+//               <p className="text-muted-foreground">Choose your theme</p>
+//             </div>
+
+//             <div className="space-y-4">
+//               <div>
+//                 <label className="text-sm font-medium mb-3 block">Theme</label>
+//                 <div className="grid grid-cols-5 gap-3">
+//                   {THEMES.map((theme) => (
+//                     <button
+//                       key={theme.name}
+//                       type="button"
+//                       onClick={() => setFormData(prev => ({
+//                         ...prev,
+//                         customization: {
+//                           ...prev.customization,
+//                           theme: theme.name.toLowerCase(),
+//                           primaryColor: theme.primary,
+//                           secondaryColor: theme.secondary
+//                         }
+//                       }))}
+//                       className={`p-4 rounded-lg border-2 ${
+//                         formData.customization.theme === theme.name.toLowerCase()
+//                           ? 'border-primary-glow'
+//                           : 'border-border'
+//                       }`}
+//                     >
+//                       <div className="flex flex-col items-center space-y-2">
+//                         <div className="flex space-x-1">
+//                           <div className="w-6 h-6 rounded-full" style={{ backgroundColor: theme.primary }} />
+//                           <div className="w-6 h-6 rounded-full" style={{ backgroundColor: theme.secondary }} />
+//                         </div>
+//                         <span className="text-xs">{theme.name}</span>
+//                       </div>
+//                     </button>
+//                   ))}
+//                 </div>
+//               </div>
+
+//               <div>
+//                 <label className="text-sm font-medium">Positioning</label>
+//                 <div className="grid grid-cols-3 gap-3 mt-2">
+//                   {['left', 'center', 'right'].map((pos) => (
+//                     <button
+//                       key={pos}
+//                       type="button"
+//                       onClick={() => setFormData(prev => ({
+//                         ...prev,
+//                         customization: { ...prev.customization, positioning: pos }
+//                       }))}
+//                       className={`p-4 rounded-lg border-2 ${
+//                         formData.customization.positioning === pos
+//                           ? 'border-primary-glow bg-primary/10'
+//                           : 'border-border'
+//                       }`}
+//                     >
+//                       <div className="capitalize">{pos}</div>
+//                     </button>
+//                   ))}
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         )
+
+//       case 9:
+//         return (
+//           <div className="space-y-6">
+//             <div className="text-center">
+//               <h2 className="text-2xl font-semibold mb-2">Final touches!</h2>
+//               <p className="text-muted-foreground">Social links</p>
+//             </div>
+//             <div className="space-y-4">
+//               <div>
+//                 <label className="text-sm font-medium">Location</label>
 //                 <Input
 //                   value={formData.location}
 //                   onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-//                   placeholder="e.g., San Francisco, CA"
+//                   placeholder="San Francisco, CA"
 //                 />
 //               </div>
 //               <div>
-//                 <label className="block text-sm font-medium mb-2">Website (Optional)</label>
+//                 <label className="text-sm font-medium">Website</label>
 //                 <Input
 //                   value={formData.website}
 //                   onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
-//                   placeholder="https://yourwebsite.com"
-//                   type="url"
+//                   placeholder="https://yoursite.com"
+//                 />
+//               </div>
+//               <div>
+//                 <label className="text-sm font-medium">GitHub</label>
+//                 <Input
+//                   value={formData.github || ''}
+//                   onChange={(e) => setFormData(prev => ({ ...prev, github: e.target.value }))}
+//                   placeholder="username"
+//                 />
+//               </div>
+//               <div>
+//                 <label className="text-sm font-medium">LinkedIn</label>
+//                 <Input
+//                   value={formData.linkedin || ''}
+//                   onChange={(e) => setFormData(prev => ({ ...prev, linkedin: e.target.value }))}
+//                   placeholder="username"
+//                 />
+//               </div>
+//               <div>
+//                 <label className="text-sm font-medium">Twitter/X</label>
+//                 <Input
+//                   value={formData.twitter || ''}
+//                   onChange={(e) => setFormData(prev => ({ ...prev, twitter: e.target.value }))}
+//                   placeholder="username"
 //                 />
 //               </div>
 //             </div>
@@ -372,7 +709,7 @@
 //   if (!user) return null
 
 //   return (
-//     <div className="min-h-screen pt-24 px-4 bg-gradient-hero">
+//     <div className="min-h-screen pt-24 px-4 bg-gradient-hero pb-12">
 //       <div className="max-w-2xl mx-auto">
 //         <div className="text-center mb-8 animate-fade-in">
 //           <div className="flex items-center justify-center space-x-2 mb-4">
@@ -402,6 +739,7 @@
 //                 variant="outline"
 //                 onClick={handleBack}
 //                 disabled={step === 1}
+//                 type="button"
 //               >
 //                 <ArrowLeft className="h-4 w-4 mr-2" />
 //                 Back
@@ -411,6 +749,7 @@
 //                 variant="glow"
 //                 onClick={handleNext}
 //                 disabled={!canContinue() || loading}
+//                 type="button"
 //               >
 //                 {step === totalSteps ? (loading ? 'Creating...' : 'Complete') : 'Next'}
 //                 {step < totalSteps && <ArrowRight className="h-4 w-4 ml-2" />}
@@ -423,8 +762,7 @@
 //   )
 // }
 
-
-// V2
+// Original Code
 
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -488,6 +826,7 @@ export default function Onboarding() {
     description: '',
     location: '',
     website: '',
+    roles: [] as string[],
     github: '',
     linkedin: '',
     twitter: '',
@@ -555,6 +894,27 @@ export default function Onboarding() {
       displayName: value
     }))
   }
+
+  const handleRoleToggle = (role: string) => {
+    setFormData(prev => {
+      const currentRoles = prev.roles || []
+      const isSelected = currentRoles.includes(role)
+      
+      let newRoles: string[]
+      if (isSelected) {
+        newRoles = currentRoles.filter(r => r !== role)
+      } else {
+        newRoles = [...currentRoles, role]
+      }
+      
+      return {
+        ...prev,
+        roles: newRoles,
+        role: newRoles[0] || '' // Set primary role to first selected
+      }
+    })
+  }
+
 
   const handleToolToggle = (tool: string) => {
     setFormData(prev => ({
@@ -659,7 +1019,7 @@ export default function Onboarding() {
   const canContinue = () => {
     switch (step) {
       case 1: return formData.username.trim() && formData.displayName.trim()
-      case 2: return formData.role.trim()
+      case 2: return (formData.roles && formData.roles.length > 0) || formData.role.trim()
       case 3: return formData.tools.length > 0
       case 4: return formData.headline.trim()
       case 5: return formData.description.trim()
@@ -741,7 +1101,7 @@ export default function Onboarding() {
           <div className="space-y-6">
             <div className="text-center">
               <h2 className="text-2xl font-semibold mb-2">What do you do?</h2>
-              <p className="text-muted-foreground">Choose your primary role</p>
+              <p className="text-muted-foreground">Choose your roles (select multiple)</p>
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">Search roles</label>
@@ -751,23 +1111,44 @@ export default function Onboarding() {
                 placeholder="Search roles..."
               />
             </div>
-            <Scrollwheel maxHeight="450px">
+            
+            {/* Selected Roles Display */}
+            {formData.roles && formData.roles.length > 0 && (
+              <div className="flex flex-wrap gap-2 p-3 bg-muted/50 rounded-lg">
+                <span className="text-sm text-muted-foreground">Selected:</span>
+                {formData.roles.map(role => (
+                  <Badge 
+                    key={role} 
+                    variant="secondary"
+                    className="cursor-pointer hover:bg-destructive/20"
+                    onClick={() => handleRoleToggle(role)}
+                  >
+                    {role} ×
+                  </Badge>
+                ))}
+              </div>
+            )}
+            
+            <Scrollwheel maxHeight="350px">
               <div className="grid grid-cols-2 gap-3 p-2">
                 {filteredRoles.length > 0 ? (
-                  filteredRoles.map((role) => (
-                    <button
-                      key={role}
-                      type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, role }))}
-                      className={`p-4 rounded-lg border-2 text-left transition-all duration-300 hover:scale-105 ${
-                        formData.role === role
-                          ? 'border-primary-glow bg-primary/10 shadow-glow-sm'
-                          : 'border-border hover:border-primary/50'
-                      }`}
-                    >
-                      <div className="font-medium">{role}</div>
-                    </button>
-                  ))
+                  filteredRoles.map((role) => {
+                    const isSelected = formData.roles?.includes(role) || formData.role === role
+                    return (
+                      <button
+                        key={role}
+                        type="button"
+                        onClick={() => handleRoleToggle(role)}
+                        className={`p-4 rounded-lg border-2 text-left transition-all duration-300 hover:scale-105 ${
+                          isSelected
+                            ? 'border-primary-glow bg-primary/10 shadow-glow-sm'
+                            : 'border-border hover:border-primary/50'
+                        }`}
+                      >
+                        <div className="font-medium">{role}</div>
+                      </button>
+                    )
+                  })
                 ) : (
                   <div className="col-span-2 text-center text-muted-foreground py-8">
                     No roles found
@@ -775,6 +1156,10 @@ export default function Onboarding() {
                 )}
               </div>
             </Scrollwheel>
+            
+            <p className="text-center text-sm text-muted-foreground">
+              {formData.roles?.length || 0} role(s) selected
+            </p>
           </div>
         )
 

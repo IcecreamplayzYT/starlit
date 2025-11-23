@@ -1,5 +1,5 @@
 // // import { Link } from 'react-router-dom'
-// // import { ArrowRight, Star, Sparkles, Search, Eye } from 'lucide-react'
+// // import { ArrowRight, Sparkles, Search, Eye } from 'lucide-react'
 // // import { Button } from '@/components/ui/button'
 // // import { Card, CardContent } from '@/components/ui/card'
 
@@ -16,8 +16,12 @@
 
 // //         <div className="container mx-auto px-4 text-center relative z-10">
 // //           <div className="animate-fade-in">
-// //             <div className="mb-8 animate-float">
-// //               <Star className="h-16 w-16 mx-auto text-primary-glow animate-glow-pulse" fill="currentColor" />
+// //             <div className="mb-8">
+// //               <img 
+// //                 src="/star.png" 
+// //                 alt="Starlit Logo" 
+// //                 className="h-16 w-16 mx-auto object-contain"
+// //               />
 // //             </div>
             
 // //             <h1 className="text-6xl md:text-8xl font-bold mb-6 text-gradient animate-scale-in">
@@ -107,7 +111,7 @@
 // //       <footer className="py-12 px-4 border-t border-border">
 // //         <div className="container mx-auto text-center">
 // //           <p className="text-muted-foreground">
-// //             © 2024 Starlit. Lighting Your Way.
+// //             © 2025 Starlit. Lighting Your Way.
 // //           </p>
 // //         </div>
 // //       </footer>
@@ -115,14 +119,17 @@
 // //   )
 // // }
 
-// // Origninal
+// // V2
 
 // import { Link } from 'react-router-dom'
 // import { ArrowRight, Sparkles, Search, Eye } from 'lucide-react'
 // import { Button } from '@/components/ui/button'
 // import { Card, CardContent } from '@/components/ui/card'
+// import { useAuth } from '@/hooks/useAuth'
 
 // export default function Index() {
+//   const { user } = useAuth()
+
 //   return (
 //     <div className="min-h-screen">
 //       {/* Hero Section */}
@@ -144,7 +151,7 @@
 //             </div>
             
 //             <h1 className="text-6xl md:text-8xl font-bold mb-6 text-gradient animate-scale-in">
-//               STARLIT
+//               starlit
 //             </h1>
             
 //             <div className="flex items-center justify-center space-x-2 mb-8 animate-fade-in" style={{ animationDelay: '0.2s' }}>
@@ -161,7 +168,9 @@
 //                 </Link>
 //               </Button>
 //               <Button variant="outline" size="lg" asChild>
-//                 <Link to="/auth">Get Started</Link>
+//                 <Link to={user ? "/discover" : "/auth"}>
+//                   Get Started
+//                 </Link>
 //               </Button>
 //             </div>
 //           </div>
@@ -217,7 +226,7 @@
 //             <h2 className="text-4xl font-bold mb-4 text-gradient">Ready to shine?</h2>
 //             <p className="text-xl text-muted-foreground mb-8">Join thousands of creatives already using Starlit</p>
 //             <Button variant="glow" size="lg" asChild>
-//               <Link to="/auth">
+//               <Link to={user ? "/discover" : "/auth"}>
 //                 Get Started Today
 //                 <ArrowRight className="h-5 w-5 ml-2" />
 //               </Link>
