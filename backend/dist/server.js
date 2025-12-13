@@ -11,6 +11,9 @@
 // import roleRoutes from './routes/roles.js';
 // import shortlistRoutes from './routes/shortlists.js';
 // import likeRoutes from './routes/likes.js';
+// import chatRoutes from './routes/chat.js';
+// import discoverRoutes from './routes/discover.js';
+// import viewsRoutes from './routes/views.js';
 // dotenv.config();
 // const app = express();
 // const PORT = process.env.PORT || 5000;
@@ -29,6 +32,9 @@
 // app.use('/api/roles', roleRoutes);
 // app.use('/api/shortlists', shortlistRoutes);
 // app.use('/api/likes', likeRoutes);
+// app.use('/api/chat', chatRoutes);
+// app.use('/api/discover', discoverRoutes);
+// app.use('/api/views', viewsRoutes);
 // // Health check
 // app.get('/api/health', (req, res) => {
 //   res.json({ message: 'STARLIT API is running', timestamp: new Date().toISOString() });
@@ -56,7 +62,6 @@
 //   }
 // };
 // startServer();
-// Original Code
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -73,6 +78,7 @@ import likeRoutes from './routes/likes.js';
 import chatRoutes from './routes/chat.js';
 import discoverRoutes from './routes/discover.js';
 import viewsRoutes from './routes/views.js';
+import premiumRoutes from './routes/premium.js';
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -81,7 +87,8 @@ app.use(cors({
     origin: ['http://localhost:5173', 'http://localhost:3000'],
     credentials: true
 }));
-app.use(express.json());
+app.use(express.json({ limit: '10mb' })); // Increased for custom CSS
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/profiles', profileRoutes);
@@ -94,9 +101,14 @@ app.use('/api/likes', likeRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/discover', discoverRoutes);
 app.use('/api/views', viewsRoutes);
+app.use('/api/premium', premiumRoutes);
 // Health check
 app.get('/api/health', (req, res) => {
-    res.json({ message: 'STARLIT API is running', timestamp: new Date().toISOString() });
+    res.json({
+        message: 'STARLIT API is running',
+        timestamp: new Date().toISOString(),
+        version: '2.0.0'
+    });
 });
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -114,6 +126,7 @@ const startServer = async () => {
         app.listen(PORT, () => {
             console.log(`🚀 STARLIT API server running on http://localhost:${PORT}`);
             console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
+            console.log(`✨ Version 2.0.0 - Premium Features Enabled`);
         });
     }
     catch (error) {
