@@ -24,6 +24,23 @@ api.interceptors.response.use(
     if (error.code === 'ECONNABORTED') {
       console.error('Request timeout')
     }
+
+    // Temporary debug logging: surface status / url for failing requests
+    try {
+      if (error.response) {
+        console.error('API response error', {
+          url: error.config?.url,
+          method: error.config?.method,
+          status: error.response.status,
+          data: error.response.data
+        })
+      } else {
+        console.error('API request error', error.message || error)
+      }
+    } catch (e) {
+      console.error('Failed to log API error', e)
+    }
+
     return Promise.reject(error)
   }
 )
