@@ -16,6 +16,8 @@ export default defineConfig({
         target: 'https://outstanding-jaculiferous-anjanette.ngrok-free.dev',
         changeOrigin: true,
         secure: false,
+        headers: {
+          'ngrok-skip-browser-warning': 'true'
         rewrite: (path) => path, // Keep the path as-is
       },
     },
