@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseURL = import.meta.env.PROD 
+const baseURL = window.location.hostname === 'localhost'
   ? 'https://outstanding-jaculiferous-anjanette.ngrok-free.dev/api'
   : '/api'
 
