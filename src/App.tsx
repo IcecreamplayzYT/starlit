@@ -33,7 +33,7 @@ function App() {
           <Route path="/chat-requests" element={<ChatRequests />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/docs" element={<DocsIndex />} />
-          <Route path="/premium*" element={<Premium />} />
+          <Route path="/premium" element={<Premium />} />
           <Route path="/docs/terms" element={<TermsNew />} />
           <Route path="/docs/privacy" element={<PrivacyNew />} />
           <Route path="/docs/*" element={<NotFound />} />          
