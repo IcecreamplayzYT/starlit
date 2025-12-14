@@ -20,8 +20,6 @@ export default defineConfig({
           proxy.on('proxyReq', (proxyReq, req, _res) => {
             // Add ngrok bypass header
             proxyReq.setHeader('ngrok-skip-browser-warning', 'true');
-            // Add custom User-Agent
-            proxyReq.setHeader('User-Agent', 'StarLit-App/1.0');
           });
         },
       },
