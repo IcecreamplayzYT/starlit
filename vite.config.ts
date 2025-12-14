@@ -13,7 +13,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:5000',
+        target: 'https://outstanding-jaculiferous-anjanette.ngrok-free.dev',
         changeOrigin: true,
         secure: false,
         configure: (proxy, _options) => {
