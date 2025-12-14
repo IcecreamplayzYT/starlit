@@ -1,7 +1,7 @@
 const BAD_WORDS = [
   // Common profanity
   'fuck', 'shit', 'ass', 'bitch', 'damn', 'crap', 'piss', 'dick', 'cock',
-  'pussy', 'asshole', 'bastard', 'slut', 'whore', 'cunt',
+  'pussy', 'asshole', 'bastard', 'slut', 'whore', 'cunt', 'dipshit', 'motherfucking',
   // Racial slurs (abbreviated)
   'nigger', 'nigga', 'chink', 'spic', 'wetback', 'kike', 'gook',
   // Homophobic slurs
