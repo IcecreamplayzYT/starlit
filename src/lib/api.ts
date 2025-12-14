@@ -1,10 +1,7 @@
 import axios from 'axios'
 
-const baseURL = window.location.hostname === 'localhost'
-  ? 'https://outstanding-jaculiferous-anjanette.ngrok-free.dev/api'
-
 export const api = axios.create({
-  baseURL,
+  baseURL: `https://outstanding-jaculiferous-anjanette.ngrok-free.dev/api/discover/tools`,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
