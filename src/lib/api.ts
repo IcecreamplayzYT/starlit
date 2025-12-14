@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const api = axios.create({
-  baseURL: `https://outstanding-jaculiferous-anjanette.ngrok-free.dev/api/discover/tools`,
+  baseURL: `https://outstanding-jaculiferous-anjanette.ngrok-free.dev/api`,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
