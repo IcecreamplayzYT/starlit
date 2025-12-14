@@ -16,9 +16,11 @@ export default defineConfig({
         target: 'https://outstanding-jaculiferous-anjanette.ngrok-free.dev',
         changeOrigin: true,
         secure: false,
-        headers: {
-          'ngrok-skip-browser-warning': 'true'
-        rewrite: (path) => path, // Keep the path as-is
+        configure: (proxy, _options) => {
+          proxy.on('proxyReq', (proxyReq, req, _res) => {
+            proxyReq.setHeader('ngrok-skip-browser-warning', 'true');
+          });
+        },
       },
     },
   },
