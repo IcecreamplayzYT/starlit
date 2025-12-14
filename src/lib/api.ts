@@ -6,7 +6,6 @@ export const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'ngrok-skip-browser-warning': 'true', // Skip ngrok warning
-    'User-Agent': 'StarLit-App/1.0', // Custom user agent
   }
 })
 
