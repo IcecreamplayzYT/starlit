@@ -1,10 +1,16 @@
 import axios from 'axios'
 
+const baseURL = import.meta.env.PROD 
+  ? 'https://outstanding-jaculiferous-anjanette.ngrok-free.dev/api'
+  : '/api'
+
 export const api = axios.create({
-  baseURL: '/api',
+  baseURL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
+    'ngrok-skip-browser-warning': 'true', // Skip ngrok warning
+    'User-Agent': 'StarLit-App/1.0', // Custom user agent
   }
 })
 
