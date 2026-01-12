@@ -3,8 +3,31 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --background: 235 73% 12%;
+    --foreground: 0 0% 100%;
+    --card: 235 65% 18%;
+    --card-foreground: 0 0% 100%;
+    --popover: 235 65% 15%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 235 73% 34%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 235 80% 55%;
+    --secondary: 235 65% 18%;
+    --secondary-foreground: 0 0% 100%;
+    --secondary-glow: 230 75% 45%;
+    --muted: 235 60% 25%;
+    --muted-foreground: 220 20% 75%;
+    --accent: 220 85% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 85% 97%;
+    --border: 235 60% 25%;
+    --input: 235 60% 25%;
+    --ring: 235 80% 55%;
+  }
+
   .legal-page {
-    /* Verve Dark Theme - Deep blacks and charcoal */
     --background: 0 0% 10%;
     --foreground: 0 0% 100%;
     --card: 0 0% 16%;
@@ -22,5 +45,125 @@
     --border: 0 0% 28%;
     --input: 0 0% 20%;
     --ring: 217 91% 60%;
+  }
+}
+
+@layer utilities {
+  /* Gradient text utilities */
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary-glow to-accent bg-clip-text text-transparent;
+  }
+  
+  .text-gradient-blue {
+    @apply bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent;
+  }
+  
+  /* Custom scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 4px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--accent) / 0.5);
+    border-radius: 4px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--accent) / 0.7);
+  }
+  
+  /* Glow effects */
+  .glow-accent {
+    box-shadow: 0 0 20px hsl(var(--accent) / 0.3);
+  }
+  
+  .glow-accent-strong {
+    box-shadow: 0 0 40px hsl(var(--accent) / 0.5);
+  }
+  
+  /* Manager card styles */
+  .manager-card-hover {
+    @apply transition-all duration-300;
+  }
+  
+  .manager-card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px hsl(var(--accent) / 0.15);
+  }
+  
+  /* Setting row animation */
+  .setting-row {
+    @apply transition-colors duration-200;
+  }
+  
+  .setting-row:hover {
+    @apply bg-muted/20;
+  }
+}
+
+/* Slider track styling */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 4px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: hsl(var(--accent));
+  border: 2px solid hsl(var(--background));
+  margin-top: -4px;
+  box-shadow: 0 2px 8px hsl(var(--accent) / 0.3);
+}
+
+/* Modal animations */
+.modal-enter {
+  animation: modalEnter 0.2s ease-out;
+}
+
+@keyframes modalEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Premium badge shimmer */
+.premium-badge {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--accent)) 0%,
+    hsl(var(--primary-glow)) 50%,
+    hsl(var(--accent)) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
   }
 }

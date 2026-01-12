@@ -28,7 +28,7 @@ function App() {
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/discover" element={<Discover />} />
           <Route path="/profile/:slug" element={<Profile />} />
-          <Route path="/profile/:slug/customize" element={<ProfileCustomization />} />
+          <Route path="/customization" element={<ProfileCustomization />} />
           <Route path="/messages" element={<ChatMessages />} />
           <Route path="/chat-requests" element={<ChatRequests />} />
           <Route path="/admin" element={<AdminDashboard />} />

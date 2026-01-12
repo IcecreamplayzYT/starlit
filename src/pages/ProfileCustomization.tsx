@@ -1,605 +1,184 @@
-// import { useState, useEffect } from 'react'
-// import { useNavigate } from 'react-router-dom'
-// import { Save, X, Plus } from 'lucide-react'
-// import { Button } from '@/components/ui/button'
-// import { Input } from '@/components/ui/input'
-// import { Textarea } from '@/components/ui/textarea'
-// import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-// import { Badge } from '@/components/ui/badge'
-// import { useAuth } from '@/hooks/useAuth'
-// import { useToast } from '@/hooks/use-toast'
-// import { api } from '@/lib/api'
-
-// const THEMES = [
-//   { name: 'Blue', primary: '#3B82F6', secondary: '#8B5CF6' },
-//   { name: 'Purple', primary: '#8B5CF6', secondary: '#EC4899' },
-//   { name: 'Green', primary: '#10B981', secondary: '#3B82F6' },
-//   { name: 'Red', primary: '#EF4444', secondary: '#F59E0B' },
-//   { name: 'Orange', primary: '#F97316', secondary: '#EF4444' }
-// ]
-
-// export default function ProfileCustomization() {
-//   const { user } = useAuth()
-//   const navigate = useNavigate()
-//   const { toast } = useToast()
-//   const [loading, setLoading] = useState(false)
-//   const [profile, setProfile] = useState<any>(null)
-//   const [formData, setFormData] = useState({
-//     username: '',
-//     displayName: '',
-//     headline: '',
-//     description: '',
-//     bio: '',
-//     location: '',
-//     website: '',
-//     github: '',
-//     linkedin: '',
-//     twitter: '',
-//     avatarUrl: '',
-//     bannerUrl: '',
-//     profileImages: [] as string[],
-//     contactMethods: [] as Array<{ type: string; value: string; label: string }>,
-//     customization: {
-//       primaryColor: '#3B82F6',
-//       secondaryColor: '#8B5CF6',
-//       positioning: 'center',
-//       theme: 'blue'
-//     }
-//   })
-//   const [newImage, setNewImage] = useState('')
-//   const [newContact, setNewContact] = useState({ type: 'email', value: '', label: '' })
-
-//   useEffect(() => {
-//     if (!user) {
-//       navigate('/auth')
-//       return
-//     }
-//     fetchProfile()
-//   }, [user, navigate])
-
-//   const fetchProfile = async () => {
-//     try {
-//       const response = await api.get('/profiles/me')
-//       setProfile(response.data)
-//       setFormData({
-//         username: response.data.username || '',
-//         displayName: response.data.displayName || response.data.name || '',
-//         headline: response.data.headline || '',
-//         description: response.data.description || '',
-//         bio: response.data.bio || '',
-//         location: response.data.location || '',
-//         website: response.data.website || '',
-//         github: response.data.github || '',
-//         linkedin: response.data.linkedin || '',
-//         twitter: response.data.twitter || '',
-//         avatarUrl: response.data.avatarUrl || '',
-//         bannerUrl: response.data.bannerUrl || '',
-//         profileImages: response.data.profileImages || [],
-//         contactMethods: response.data.contactMethods || [],
-//         customization: response.data.customization || {
-//           primaryColor: '#3B82F6',
-//           secondaryColor: '#8B5CF6',
-//           positioning: 'center',
-//           theme: 'blue'
-//         }
-//       })
-//     } catch (error) {
-//       console.error('Failed to fetch profile:', error)
-//     }
-//   }
-
-//   const validateUrl = (url: string): boolean => {
-//     if (!url) return true
-//     try {
-//       new URL(url)
-//       return true
-//     } catch {
-//       return false
-//     }
-//   }
-
-//   const handleAddImage = () => {
-//     if (!newImage.trim()) return
-    
-//     if (!validateUrl(newImage)) {
-//       toast({
-//         title: "Invalid URL",
-//         description: "Please enter a valid image URL",
-//         variant: "destructive"
-//       })
-//       return
-//     }
-    
-//     const maxImages = profile?.isPremium ? 10 : 5
-//     if (formData.profileImages.length >= maxImages) {
-//       toast({
-//         title: "Image limit reached",
-//         description: `You can only have ${maxImages} images`,
-//         variant: "destructive"
-//       })
-//       return
-//     }
-
-//     setFormData(prev => ({
-//       ...prev,
-//       profileImages: [...prev.profileImages, newImage]
-//     }))
-//     setNewImage('')
-//   }
-
-//   const handleRemoveImage = (index: number) => {
-//     setFormData(prev => ({
-//       ...prev,
-//       profileImages: prev.profileImages.filter((_, i) => i !== index)
-//     }))
-//   }
-
-//   const handleAddContact = () => {
-//     if (!newContact.value.trim()) return
-    
-//     setFormData(prev => ({
-//       ...prev,
-//       contactMethods: [...prev.contactMethods, { ...newContact }]
-//     }))
-//     setNewContact({ type: 'email', value: '', label: '' })
-//   }
-
-//   const handleRemoveContact = (index: number) => {
-//     setFormData(prev => ({
-//       ...prev,
-//       contactMethods: prev.contactMethods.filter((_, i) => i !== index)
-//     }))
-//   }
-
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault()
-    
-//     if (formData.website && !validateUrl(formData.website)) {
-//       toast({
-//         title: "Invalid URL",
-//         description: "Please enter a valid website URL",
-//         variant: "destructive"
-//       })
-//       return
-//     }
-
-//     setLoading(true)
-
-//     try {
-//       await api.patch(`/profiles/${profile._id}`, formData)
-//       toast({
-//         title: "Profile updated!",
-//         description: "Your changes have been saved successfully."
-//       })
-//       navigate(`/profile/${profile.slug}`)
-//     } catch (error: any) {
-//       toast({
-//         title: "Update failed",
-//         description: error.response?.data?.error || "Failed to update profile",
-//         variant: "destructive"
-//       })
-//     } finally {
-//       setLoading(false)
-//     }
-//   }
-
-//   if (!profile) {
-//     return (
-//       <div className="min-h-screen pt-24 px-4 flex items-center justify-center">
-//         <div className="animate-spin h-12 w-12 border-2 border-primary border-t-transparent rounded-full"></div>
-//       </div>
-//     )
-//   }
-
-//   return (
-//     <div className="min-h-screen pt-24 px-4 pb-12">
-//       <div className="container mx-auto py-8 max-w-4xl">
-//         <div className="mb-8">
-//           <h1 className="text-4xl font-bold mb-2 text-gradient">Customize Your Profile</h1>
-//           <p className="text-muted-foreground">Make your profile uniquely yours</p>
-//         </div>
-
-//         <form onSubmit={handleSubmit} className="space-y-6">
-//           {/* Basic Info */}
-//           <Card>
-//             <CardHeader>
-//               <CardTitle>Basic Information</CardTitle>
-//             </CardHeader>
-//             <CardContent className="space-y-4">
-//               <div className="grid md:grid-cols-2 gap-4">
-//                 <div>
-//                   <label className="block text-sm font-medium mb-2">Username</label>
-//                   <Input value={formData.username} disabled className="bg-muted" />
-//                   <p className="text-xs text-muted-foreground mt-1">Cannot be changed</p>
-//                 </div>
-//                 <div>
-//                   <label className="block text-sm font-medium mb-2">Display Name</label>
-//                   <Input
-//                     value={formData.displayName}
-//                     onChange={(e) => setFormData(prev => ({ ...prev, displayName: e.target.value }))}
-//                   />
-//                 </div>
-//               </div>
-
-//               <div>
-//                 <label className="block text-sm font-medium mb-2">Headline</label>
-//                 <Input
-//                   value={formData.headline}
-//                   onChange={(e) => setFormData(prev => ({ ...prev, headline: e.target.value }))}
-//                   maxLength={100}
-//                 />
-//                 <p className="text-xs text-muted-foreground mt-1">{formData.headline.length}/100</p>
-//               </div>
-
-//               <div>
-//                 <label className="block text-sm font-medium mb-2">Description</label>
-//                 <Textarea
-//                   value={formData.description}
-//                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-//                   rows={4}
-//                   maxLength={1000}
-//                   className="resize-none"
-//                 />
-//                 <p className="text-xs text-muted-foreground mt-1">{formData.description.length}/1000</p>
-//               </div>
-
-//               <div>
-//                 <label className="block text-sm font-medium mb-2">Bio</label>
-//                 <Textarea
-//                   value={formData.bio}
-//                   onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
-//                   rows={3}
-//                   maxLength={500}
-//                   className="resize-none"
-//                 />
-//                 <p className="text-xs text-muted-foreground mt-1">{formData.bio.length}/500</p>
-//               </div>
-//             </CardContent>
-//           </Card>
-
-//           {/* Profile Pictures */}
-//           <Card>
-//             <CardHeader>
-//               <CardTitle>Profile Pictures</CardTitle>
-//             </CardHeader>
-//             <CardContent className="space-y-4">
-//               <div>
-//                 <label className="block text-sm font-medium mb-2">Avatar URL</label>
-//                 <Input
-//                   value={formData.avatarUrl}
-//                   onChange={(e) => setFormData(prev => ({ ...prev, avatarUrl: e.target.value }))}
-//                   placeholder="https://i.imgur.com/avatar.jpg"
-//                 />
-//               </div>
-
-//               <div>
-//                 <label className="block text-sm font-medium mb-2">Banner URL</label>
-//                 <Input
-//                   value={formData.bannerUrl}
-//                   onChange={(e) => setFormData(prev => ({ ...prev, bannerUrl: e.target.value }))}
-//                   placeholder="https://i.imgur.com/banner.jpg"
-//                 />
-//               </div>
-
-//               <div>
-//                 <label className="block text-sm font-medium mb-2">
-//                   Gallery <Badge variant="secondary">{formData.profileImages.length}/{profile.isPremium ? 10 : 5}</Badge>
-//                 </label>
-//                 <div className="flex gap-2 mb-2">
-//                   <Input
-//                     value={newImage}
-//                     onChange={(e) => setNewImage(e.target.value)}
-//                     placeholder="Image URL"
-//                   />
-//                   <Button type="button" onClick={handleAddImage} size="sm">
-//                     <Plus className="h-4 w-4" />
-//                   </Button>
-//                 </div>
-                
-//                 {formData.profileImages.length > 0 && (
-//                   <div className="grid grid-cols-3 gap-2">
-//                     {formData.profileImages.map((img, idx) => (
-//                       <div key={idx} className="relative group">
-//                         <img src={img} alt="" className="w-full h-24 object-cover rounded border" />
-//                         <button
-//                           type="button"
-//                           onClick={() => handleRemoveImage(idx)}
-//                           className="absolute top-1 right-1 p-1 bg-destructive rounded-full opacity-0 group-hover:opacity-100"
-//                         >
-//                           <X className="h-3 w-3 text-white" />
-//                         </button>
-//                       </div>
-//                     ))}
-//                   </div>
-//                 )}
-//               </div>
-//             </CardContent>
-//           </Card>
-
-//           {/* Contact Methods */}
-//           <Card>
-//             <CardHeader>
-//               <CardTitle>Contact Methods</CardTitle>
-//             </CardHeader>
-//             <CardContent className="space-y-4">
-//               <div className="flex gap-2">
-//                 <select
-//                   value={newContact.type}
-//                   onChange={(e) => setNewContact(prev => ({ ...prev, type: e.target.value }))}
-//                   className="px-3 py-2 rounded-lg border-2 border-border bg-background"
-//                 >
-//                   <option value="email">Email</option>
-//                   <option value="phone">Phone</option>
-//                   <option value="discord">Discord</option>
-//                   <option value="telegram">Telegram</option>
-//                   <option value="other">Other</option>
-//                 </select>
-//                 <Input
-//                   value={newContact.value}
-//                   onChange={(e) => setNewContact(prev => ({ ...prev, value: e.target.value }))}
-//                   placeholder="Value"
-//                 />
-//                 <Input
-//                   value={newContact.label}
-//                   onChange={(e) => setNewContact(prev => ({ ...prev, label: e.target.value }))}
-//                   placeholder="Label"
-//                 />
-//                 <Button type="button" onClick={handleAddContact} size="sm">
-//                   <Plus className="h-4 w-4" />
-//                 </Button>
-//               </div>
-
-//               {formData.contactMethods.length > 0 && (
-//                 <div className="space-y-2">
-//                   {formData.contactMethods.map((contact, idx) => (
-//                     <div key={idx} className="flex items-center justify-between p-3 border rounded-lg">
-//                       <div>
-//                         <p className="text-sm font-medium capitalize">{contact.type}</p>
-//                         <p className="text-xs text-muted-foreground">{contact.value}</p>
-//                       </div>
-//                       <Button type="button" variant="ghost" size="sm" onClick={() => handleRemoveContact(idx)}>
-//                         <X className="h-4 w-4" />
-//                       </Button>
-//                     </div>
-//                   ))}
-//                 </div>
-//               )}
-//             </CardContent>
-//           </Card>
-
-//           {/* Customization */}
-//           <Card>
-//             <CardHeader>
-//               <CardTitle>Theme & Colors</CardTitle>
-//             </CardHeader>
-//             <CardContent className="space-y-4">
-//               <div>
-//                 <label className="block text-sm font-medium mb-3">Theme</label>
-//                 <div className="grid grid-cols-5 gap-3">
-//                   {THEMES.map((theme) => (
-//                     <button
-//                       key={theme.name}
-//                       type="button"
-//                       onClick={() => setFormData(prev => ({
-//                         ...prev,
-//                         customization: {
-//                           ...prev.customization,
-//                           theme: theme.name.toLowerCase(),
-//                           primaryColor: theme.primary,
-//                           secondaryColor: theme.secondary
-//                         }
-//                       }))}
-//                       className={`p-4 rounded-lg border-2 ${
-//                         formData.customization.theme === theme.name.toLowerCase()
-//                           ? 'border-primary-glow'
-//                           : 'border-border'
-//                       }`}
-//                     >
-//                       <div className="flex flex-col items-center space-y-2">
-//                         <div className="flex space-x-1">
-//                           <div className="w-6 h-6 rounded-full" style={{ backgroundColor: theme.primary }} />
-//                           <div className="w-6 h-6 rounded-full" style={{ backgroundColor: theme.secondary }} />
-//                         </div>
-//                         <span className="text-xs">{theme.name}</span>
-//                       </div>
-//                     </button>
-//                   ))}
-//                 </div>
-//               </div>
-
-//               <div>
-//                 <label className="block text-sm font-medium mb-2">Positioning</label>
-//                 <div className="grid grid-cols-3 gap-3">
-//                   {['left', 'center', 'right'].map((pos) => (
-//                     <button
-//                       key={pos}
-//                       type="button"
-//                       onClick={() => setFormData(prev => ({
-//                         ...prev,
-//                         customization: { ...prev.customization, positioning: pos }
-//                       }))}
-//                       className={`p-4 rounded-lg border-2 ${
-//                         formData.customization.positioning === pos
-//                           ? 'border-primary-glow bg-primary/10'
-//                           : 'border-border'
-//                       }`}
-//                     >
-//                       <div className="capitalize">{pos}</div>
-//                     </button>
-//                   ))}
-//                 </div>
-//               </div>
-//             </CardContent>
-//           </Card>
-
-//           {/* Social Links */}
-//           <Card>
-//             <CardHeader>
-//               <CardTitle>Location & Social</CardTitle>
-//             </CardHeader>
-//             <CardContent className="space-y-4">
-//               <div>
-//                 <label className="block text-sm font-medium mb-2">Location</label>
-//                 <Input
-//                   value={formData.location}
-//                   onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-//                 />
-//               </div>
-//               <div>
-//                 <label className="block text-sm font-medium mb-2">Website</label>
-//                 <Input
-//                   value={formData.website}
-//                   onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
-//                 />
-//               </div>
-//               <div>
-//                 <label className="block text-sm font-medium mb-2">GitHub</label>
-//                 <Input
-//                   value={formData.github || ''}
-//                   onChange={(e) => setFormData(prev => ({ ...prev, github: e.target.value }))}
-//                 />
-//               </div>
-//               <div>
-//                 <label className="block text-sm font-medium mb-2">LinkedIn</label>
-//                 <Input
-//                   value={formData.linkedin || ''}
-//                   onChange={(e) => setFormData(prev => ({ ...prev, linkedin: e.target.value }))}
-//                 />
-//               </div>
-//               <div>
-//                 <label className="block text-sm font-medium mb-2">Twitter</label>
-//                 <Input
-//                   value={formData.twitter || ''}
-//                   onChange={(e) => setFormData(prev => ({ ...prev, twitter: e.target.value }))}
-//                 />
-//               </div>
-//             </CardContent>
-//           </Card>
-
-//           <div className="flex justify-end space-x-4">
-//             <Button type="button" variant="outline" onClick={() => navigate(`/profile/${profile.slug}`)}>
-//               Cancel
-//             </Button>
-//             <Button type="submit" variant="glow" disabled={loading}>
-//               <Save className="h-4 w-4 mr-2" />
-//               {loading ? 'Saving...' : 'Save Changes'}
-//             </Button>
-//           </div>
-//         </form>
-//       </div>
-//     </div>
-//   )
-// }
-
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  Save,
-  X,
-  Plus,
-  Crown,
-  Palette,
-  Layout,
-  Image as ImageIcon,
-  Lock,
+import { 
+  Save, User, Image, Music, MousePointer,
+  Settings, Palette, Square, FileText, Clock,
+  LayoutGrid, Sparkles, Eye, MessageSquare, Move
 } from 'lucide-react'
-
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Slider } from '@/components/ui/slider'
+import { Switch } from '@/components/ui/switch'
+import { ColorPicker } from '@/components/ui/color-picker'
+import { SelectCustom } from '@/components/ui/select-custom'
+import { ManagerCard } from '@/components/customization/ManagerCard'
+import { SectionHeader } from '@/components/customization/SectionHeader'
+import { SectionCard } from '@/components/customization/SectionCard'
+import { SettingRow } from '@/components/customization/SettingRow'
+import { ThemeSelector } from '@/components/customization/ThemeSelector'
+import { AvatarManagerModal } from '@/components/customization/AvatarManagerModal'
+import { BackgroundManagerModal } from '@/components/customization/BackgroundManagerModal'
+import { AudioManagerModal } from '@/components/customization/AudioManagerModal'
+import { CursorManagerModal } from '@/components/customization/CursorManagerModal'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/hooks/use-toast'
 import { api } from '@/lib/api'
 
-/* -------------------------------------------------------------------------- */
-/*  Constants                                                               */
-/* -------------------------------------------------------------------------- */
-const THEMES = [
-  { name: 'Blue', primary: '#3B82F6', secondary: '#8B5CF6' },
-  { name: 'Purple', primary: '#8B5CF6', secondary: '#EC4899' },
-  { name: 'Green', primary: '#10B981', secondary: '#3B82F6' },
-  { name: 'Red', primary: '#EF4444', secondary: '#F59E0B' },
-  { name: 'Orange', primary: '#F97316', secondary: '#EF4444' },
-  { name: 'Cyan', primary: '#06B6D4', secondary: '#8B5CF6' },
-  { name: 'Pink', primary: '#EC4899', secondary: '#8B5CF6' },
-  { name: 'Teal', primary: '#14B8A6', secondary: '#06B6D4' },
-]
+interface Profile {
+  _id: string
+  slug: string
+  username: string
+  displayName: string
+  isPremium: boolean
+  customization?: CustomizationState
+}
 
-const BACKGROUND_TYPES = ['solid', 'gradient', 'image']
-const CARD_STYLES = [
-  'modern',
-  'minimal',
-  'glassmorphism',
-  'neumorphism',
-]
+interface CustomizationState {
+  // General
+  description: string
+  location: string
+  enterText: string
+  avatarRadius: number
+  profileOpacity: number
+  profileBlur: number
+  backgroundEffect: string
+  usernameEffect: string
+  avatarUrl: string
+  bannerUrl: string
+  
+  // Colors
+  accentColor: string
+  textColor: string
+  secondaryTextColor: string
+  backgroundColor: string
+  gradientEnabled: boolean
+  
+  // Border
+  borderEnabled: boolean
+  borderColor: string
+  borderRadius: number
+  
+  // About Me
+  aboutMeEnabled: boolean
+  aboutMeText: string
+  
+  // Time
+  showJoinDate: boolean
+  timeFormat: string
+  displayMode: string
+  timeSchema: string
+  
+  // Other
+  volumeControl: boolean
+  titleAnimation: string
+  forceEnterScreen: boolean
+  showViews: boolean
+  viewsAnimation: boolean
+  viewsAnimationDuration: number
+  parallaxEnabled: boolean
+  parallaxInverted: boolean
+  parallaxIntensity: number
+  allowFeedback: boolean
+  allowComments: boolean
+  commentsPublic: boolean
+  
+  // Theme
+  theme: string
+  
+  // Media
+  backgrounds: Array<{ url: string; position?: string }>
+  backgroundShuffle: boolean
+  backgroundLoop: boolean
+  backgroundDuration: number
+  
+  audios: Array<{ url: string; name: string }>
+  audioShuffle: boolean
+  audioPlayer: boolean
+  audioVolume: boolean
+  audioSticky: boolean
+  
+  customCursor: string
+  customPointerCursor: string
+}
 
-/* -------------------------------------------------------------------------- */
-/*  Component                                                               */
-/* -------------------------------------------------------------------------- */
+const defaultCustomization: CustomizationState = {
+  description: '',
+  location: '',
+  enterText: '',
+  avatarRadius: 50,
+  profileOpacity: 100,
+  profileBlur: 0,
+  backgroundEffect: 'none',
+  usernameEffect: 'none',
+  avatarUrl: '',
+  bannerUrl: '',
+  
+  accentColor: '#3B82F6',
+  textColor: '#FFFFFF',
+  secondaryTextColor: '#A0A0A0',
+  backgroundColor: '#030303',
+  gradientEnabled: false,
+  
+  borderEnabled: false,
+  borderColor: '#3B82F6',
+  borderRadius: 16,
+  
+  aboutMeEnabled: true,
+  aboutMeText: '',
+  
+  showJoinDate: true,
+  timeFormat: '12h',
+  displayMode: 'absolute',
+  timeSchema: 'MMM DD, YYYY, HH:mm A',
+  
+  volumeControl: false,
+  titleAnimation: 'none',
+  forceEnterScreen: false,
+  showViews: true,
+  viewsAnimation: false,
+  viewsAnimationDuration: 1000,
+  parallaxEnabled: false,
+  parallaxInverted: false,
+  parallaxIntensity: 50,
+  allowFeedback: false,
+  allowComments: false,
+  commentsPublic: false,
+  
+  theme: 'default',
+  
+  backgrounds: [],
+  backgroundShuffle: false,
+  backgroundLoop: false,
+  backgroundDuration: 5,
+  
+  audios: [],
+  audioShuffle: false,
+  audioPlayer: false,
+  audioVolume: true,
+  audioSticky: false,
+  
+  customCursor: '',
+  customPointerCursor: '',
+}
+
 export default function ProfileCustomization() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const { toast } = useToast()
-  const [loading, setLoading] = useState(false)
-  const [profile, setProfile] = useState<any>(null)
-  const [activeTab, setActiveTab] = useState('basic')
+  
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [profile, setProfile] = useState<Profile | null>(null)
+  const [customization, setCustomization] = useState<CustomizationState>(defaultCustomization)
+  
+  // Modal states
+  const [avatarModalOpen, setAvatarModalOpen] = useState(false)
+  const [backgroundModalOpen, setBackgroundModalOpen] = useState(false)
+  const [audioModalOpen, setAudioModalOpen] = useState(false)
+  const [cursorModalOpen, setCursorModalOpen] = useState(false)
 
-  const [formData, setFormData] = useState({
-    username: '',
-    displayName: '',
-    headline: '',
-    description: '',
-    bio: '',
-    location: '',
-    website: '',
-    github: '',
-    linkedin: '',
-    twitter: '',
-    avatarUrl: '',
-    bannerUrl: '',
-    cardImageUrl: '',
-    profileBackgroundUrl: '',
-    profileImages: [] as string[],
-    contactMethods: [] as Array<{ type: string; value: string; label: string }>,
-    customization: {
-      primaryColor: '#3B82F6',
-      secondaryColor: '#8B5CF6',
-      accentColor: '#EC4899',
-      textColor: '#FFFFFF',
-      backgroundColor: '#0A0A0A',
-      positioning: 'center',
-      theme: 'blue',
-      backgroundType: 'solid',
-      backgroundGradient:
-        'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      fontStyle: 'sans-serif',
-      cardStyle: 'modern',
-      borderRadius: 'medium',
-      shadowIntensity: 'medium',
-      animationSpeed: 'normal',
-      showSocialIcons: true,
-      compactMode: false,
-      customCSS: '',
-    },
-  })
-
-  const [newImage, setNewImage] = useState('')
-  const [newContact, setNewContact] = useState({
-    type: 'email',
-    value: '',
-    label: '',
-  })
-
-  /* ---------------------------------------------------------------------- */
-  /*  Effects                                                               */
-  /* ---------------------------------------------------------------------- */
   useEffect(() => {
     if (!user) {
       navigate('/auth')
@@ -612,1144 +191,606 @@ export default function ProfileCustomization() {
     try {
       const response = await api.get('/profiles/me')
       setProfile(response.data)
-
-      const customization = response.data.customization || {}
-      setFormData({
-        username: response.data.username || '',
-        displayName:
-          response.data.displayName ||
-          response.data.name ||
-          '',
-        headline: response.data.headline || '',
-        description: response.data.description || '',
-        bio: response.data.bio || '',
-        location: response.data.location || '',
-        website: response.data.website || '',
-        github: response.data.github || '',
-        linkedin: response.data.linkedin || '',
-        twitter: response.data.twitter || '',
-        avatarUrl: response.data.avatarUrl || '',
-        bannerUrl: response.data.bannerUrl || '',
-        cardImageUrl: response.data.cardImageUrl || '',
-        profileBackgroundUrl:
-          response.data.profileBackgroundUrl || '',
-        profileImages: response.data.profileImages || [],
-        contactMethods: response.data.contactMethods || [],
-        customization: {
-          primaryColor:
-            customization.primaryColor || '#3B82F6',
-          secondaryColor:
-            customization.secondaryColor || '#8B5CF6',
-          accentColor:
-            customization.accentColor || '#EC4899',
-          textColor:
-            customization.textColor || '#FFFFFF',
-          backgroundColor:
-            customization.backgroundColor || '#0A0A0A',
-          positioning:
-            customization.positioning || 'center',
-          theme: customization.theme || 'blue',
-          backgroundType:
-            customization.backgroundType || 'solid',
-          backgroundGradient:
-            customization.backgroundGradient ||
-            'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          fontStyle:
-            customization.fontStyle || 'sans-serif',
-          cardStyle:
-            customization.cardStyle || 'modern',
-          borderRadius:
-            customization.borderRadius || 'medium',
-          shadowIntensity:
-            customization.shadowIntensity || 'medium',
-          animationSpeed:
-            customization.animationSpeed || 'normal',
-          showSocialIcons:
-            customization.showSocialIcons !== false,
-          compactMode: customization.compactMode || false,
-          customCSS: customization.customCSS || '',
-        },
-      })
+      
+      // Merge saved customization with defaults
+      if (response.data.customization) {
+        setCustomization({
+          ...defaultCustomization,
+          ...response.data.customization,
+          avatarUrl: response.data.avatarUrl || '',
+          bannerUrl: response.data.bannerUrl || '',
+          description: response.data.description || '',
+          location: response.data.location || '',
+        })
+      } else {
+        setCustomization({
+          ...defaultCustomization,
+          avatarUrl: response.data.avatarUrl || '',
+          bannerUrl: response.data.bannerUrl || '',
+          description: response.data.description || '',
+          location: response.data.location || '',
+        })
+      }
     } catch (error) {
       console.error('Failed to fetch profile:', error)
-    }
-  }
-
-  /* ---------------------------------------------------------------------- */
-  /*  Helpers                                                               */
-  /* ---------------------------------------------------------------------- */
-  const validateUrl = (url: string): boolean => {
-    if (!url) return true
-    try {
-      new URL(url)
-      return true
-    } catch {
-      return false
-    }
-  }
-
-  const handleAddImage = () => {
-    if (!newImage.trim()) return
-
-    if (!validateUrl(newImage)) {
       toast({
-        title: 'Invalid URL',
-        description: 'Please enter a valid image URL',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    const maxImages = profile?.isPremium ? 20 : 5
-    if (formData.profileImages.length >= maxImages) {
-      toast({
-        title: 'Image limit reached',
-        description: `You can only have ${maxImages} images`,
-        variant: 'destructive',
-      })
-      return
-    }
-
-    setFormData((prev) => ({
-      ...prev,
-      profileImages: [...prev.profileImages, newImage],
-    }))
-    setNewImage('')
-  }
-
-  const handleRemoveImage = (index: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      profileImages: prev.profileImages.filter(
-        (_, i) => i !== index,
-      ),
-    }))
-  }
-
-  const handleAddContact = () => {
-    if (!newContact.value.trim()) return
-
-    setFormData((prev) => ({
-      ...prev,
-      contactMethods: [...prev.contactMethods, { ...newContact }],
-    }))
-    setNewContact({ type: 'email', value: '', label: '' })
-  }
-
-  const handleRemoveContact = (index: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      contactMethods: prev.contactMethods.filter(
-        (_, i) => i !== index,
-      ),
-    }))
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (formData.website && !validateUrl(formData.website)) {
-      toast({
-        title: 'Invalid URL',
-        description: 'Please enter a valid website URL',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    setLoading(true)
-
-    try {
-      await api.patch(`/profiles/${profile._id}`, formData)
-      toast({
-        title: 'Profile updated!',
-        description:
-          'Your changes have been saved successfully.',
-      })
-      navigate(`/profile/${profile.slug}`)
-    } catch (error: any) {
-      toast({
-        title: 'Update failed',
-        description:
-          error.response?.data?.error ||
-          'Failed to update profile',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to load profile",
+        variant: "destructive"
       })
     } finally {
       setLoading(false)
     }
   }
 
-  /* ---------------------------------------------------------------------- */
-  /*  UI helpers                                                            */
-  /* ---------------------------------------------------------------------- */
-  const PremiumFeature = ({
-    children,
-  }: {
-    children: React.ReactNode
-  }) => {
-    if (profile?.isPremium) return <>{children}</>
+  const handleSave = async () => {
+    if (!profile) return
+    
+    setSaving(true)
+    try {
+      await api.patch(`/profiles/${profile._id}`, {
+        customization,
+        avatarUrl: customization.avatarUrl,
+        bannerUrl: customization.bannerUrl,
+        description: customization.description,
+        location: customization.location,
+      })
+      
+      toast({
+        title: "Saved!",
+        description: "Your customization has been saved"
+      })
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.response?.data?.error || "Failed to save",
+        variant: "destructive"
+      })
+    } finally {
+      setSaving(false)
+    }
+  }
 
+  const updateField = <K extends keyof CustomizationState>(
+    field: K, 
+    value: CustomizationState[K]
+  ) => {
+    setCustomization(prev => ({ ...prev, [field]: value }))
+  }
+
+  if (loading) {
     return (
-      <div className="relative">
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-10 rounded-lg flex items-center justify-center">
-          <div className="text-center">
-            <Lock className="h-8 w-8 mx-auto mb-2 text-yellow-500" />
-            <p className="text-sm font-semibold text-yellow-500">
-              Premium Feature
-            </p>
-            <Button
-              size="sm"
-              variant="outline"
-              className="mt-2"
-              onClick={() =>
-                toast({
-                  title: 'Coming Soon',
-                  description:
-                    'Premium upgrades will be available soon!',
-                })
-              }
-            >
-              Upgrade to Premium
-            </Button>
-          </div>
+      <div className="min-h-screen pt-24 px-4 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin h-12 w-12 border-2 border-accent border-t-transparent rounded-full mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading customization...</p>
         </div>
-        <div className="opacity-50 pointer-events-none">{children}</div>
       </div>
     )
   }
 
-  /* ---------------------------------------------------------------------- */
-  /*  Render                                                                */
-  /* ---------------------------------------------------------------------- */
   if (!profile) {
     return (
       <div className="min-h-screen pt-24 px-4 flex items-center justify-center">
-        <div className="animate-spin h-12 w-12 border-2 border-primary border-t-transparent rounded-full"></div>
+        <div className="text-center">
+          <p className="text-muted-foreground mb-4">No profile found</p>
+          <Button variant="glow" onClick={() => navigate('/onboarding')}>
+            Create Profile
+          </Button>
+        </div>
       </div>
     )
   }
 
+  const isPremium = profile.isPremium
+
   return (
-    <div className="min-h-screen pt-24 px-4 pb-12">
-      <div className="container mx-auto py-8 max-w-6xl">
-        {/* ---------- Header ---------- */}
+    <div className="min-h-screen pt-24 pb-32">
+      <div className="container mx-auto px-4 max-w-4xl">
+        {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold mb-2 text-gradient">
-                Customize Your Profile
-              </h1>
-              <p className="text-muted-foreground">
-                Make your profile uniquely yours
-              </p>
-            </div>
-            {profile.isPremium && (
-              <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white">
-                <Crown className="h-4 w-4 mr-1" />
-                Premium User
-              </Badge>
+          <div className="flex items-center justify-between mb-2">
+            <h1 className="text-3xl font-bold text-gradient">Customization</h1>
+            {isPremium && (
+              <Badge className="premium-badge text-white">Premium</Badge>
             )}
           </div>
+          <p className="text-muted-foreground">
+            Customize your profile appearance and settings
+          </p>
         </div>
 
-        {/* ---------- Tab Navigation ---------- */}
-        <div className="flex space-x-2 mb-6 overflow-x-auto">
-          {[
-            { id: 'basic', label: 'Basic Info', icon: Layout },
-            { id: 'images', label: 'Images', icon: ImageIcon },
-            { id: 'styling', label: 'Styling', icon: Palette },
-            { id: 'advanced', label: 'Advanced', icon: Crown },
-          ].map((tab) => (
-            <Button
-              key={tab.id}
-              variant={activeTab === tab.id ? 'glow' : 'outline'}
-              size="sm"
-              onClick={() => setActiveTab(tab.id)}
-              className="flex items-center space-x-2"
+        {/* Manager Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <ManagerCard
+            icon={User}
+            title="Avatar"
+            subtitle="Profile picture"
+            onClick={() => setAvatarModalOpen(true)}
+          />
+          <ManagerCard
+            icon={Image}
+            title="Backgrounds"
+            subtitle={`${customization.backgrounds.length} added`}
+            onClick={() => setBackgroundModalOpen(true)}
+          />
+          <ManagerCard
+            icon={Music}
+            title="Audio"
+            subtitle={`${customization.audios.length} tracks`}
+            onClick={() => setAudioModalOpen(true)}
+          />
+          <ManagerCard
+            icon={MousePointer}
+            title="Cursor"
+            subtitle={isPremium ? "Custom cursor" : "Premium"}
+            onClick={() => setCursorModalOpen(true)}
+          />
+        </div>
+
+        {/* Sections */}
+        <div className="space-y-6">
+          {/* General Customization */}
+          <SectionCard>
+            <SectionHeader icon={Settings} title="General" />
+            
+            <SettingRow label="Description" vertical>
+              <div className="relative">
+                <Textarea
+                  value={customization.description}
+                  onChange={(e) => updateField('description', e.target.value)}
+                  placeholder="Tell visitors about yourself..."
+                  maxLength={500}
+                  rows={3}
+                  className="resize-none"
+                />
+                <span className="absolute bottom-2 right-2 text-xs text-muted-foreground">
+                  {customization.description.length}/500
+                </span>
+              </div>
+            </SettingRow>
+            
+            <SettingRow label="Avatar Radius" tooltip="How rounded your avatar should be">
+              <Slider
+                value={customization.avatarRadius}
+                onChange={(v) => updateField('avatarRadius', v)}
+                min={0}
+                max={50}
+                defaultValue={50}
+                suffix="%"
+              />
+            </SettingRow>
+            
+            <SettingRow label="Profile Opacity">
+              <Slider
+                value={customization.profileOpacity}
+                onChange={(v) => updateField('profileOpacity', v)}
+                min={50}
+                max={100}
+                defaultValue={100}
+                suffix="%"
+              />
+            </SettingRow>
+            
+            <SettingRow label="Profile Blur">
+              <Slider
+                value={customization.profileBlur}
+                onChange={(v) => updateField('profileBlur', v)}
+                min={0}
+                max={20}
+                defaultValue={0}
+                suffix="px"
+              />
+            </SettingRow>
+            
+            <SettingRow label="Background Effect">
+              <SelectCustom
+                value={customization.backgroundEffect}
+                onChange={(v) => updateField('backgroundEffect', v)}
+                options={[
+                  { value: 'none', label: 'None' },
+                  { value: 'particles', label: 'Particles' },
+                  { value: 'snow', label: 'Snow' },
+                  { value: 'rain', label: 'Rain' },
+                  { value: 'stars', label: 'Stars' },
+                ]}
+              />
+            </SettingRow>
+            
+            <SettingRow label="Username Effect">
+              <SelectCustom
+                value={customization.usernameEffect}
+                onChange={(v) => updateField('usernameEffect', v)}
+                options={[
+                  { value: 'none', label: 'None' },
+                  { value: 'glow', label: 'Glow' },
+                  { value: 'rainbow', label: 'Rainbow' },
+                  { value: 'typing', label: 'Typing' },
+                  { value: 'wave', label: 'Wave' },
+                ]}
+              />
+            </SettingRow>
+            
+            <SettingRow label="Location">
+              <Input
+                value={customization.location}
+                onChange={(e) => updateField('location', e.target.value)}
+                placeholder="City, Country"
+                className="max-w-[200px]"
+              />
+            </SettingRow>
+            
+            <SettingRow 
+              label="Enter Text" 
+              description={!isPremium ? "Premium feature" : undefined}
             >
-              <tab.icon className="h-4 w-4" />
-              <span>{tab.label}</span>
+              <Input
+                value={customization.enterText}
+                onChange={(e) => updateField('enterText', e.target.value)}
+                placeholder="Click to enter..."
+                className="max-w-[200px]"
+                disabled={!isPremium}
+              />
+            </SettingRow>
+          </SectionCard>
+
+          {/* Color Customization */}
+          <SectionCard>
+            <SectionHeader icon={Palette} title="Colors" />
+            
+            <SettingRow label="Accent Color">
+              <ColorPicker
+                value={customization.accentColor}
+                onChange={(v) => updateField('accentColor', v)}
+                defaultValue="#3B82F6"
+              />
+            </SettingRow>
+            
+            <SettingRow label="Text Color">
+              <ColorPicker
+                value={customization.textColor}
+                onChange={(v) => updateField('textColor', v)}
+                defaultValue="#FFFFFF"
+              />
+            </SettingRow>
+            
+            <SettingRow label="Secondary Text Color">
+              <ColorPicker
+                value={customization.secondaryTextColor}
+                onChange={(v) => updateField('secondaryTextColor', v)}
+                defaultValue="#A0A0A0"
+              />
+            </SettingRow>
+            
+            <SettingRow label="Background Color">
+              <ColorPicker
+                value={customization.backgroundColor}
+                onChange={(v) => updateField('backgroundColor', v)}
+                defaultValue="#030303"
+              />
+            </SettingRow>
+            
+            <SettingRow label="Enable Gradient">
+              <Switch
+                checked={customization.gradientEnabled}
+                onCheckedChange={(v) => updateField('gradientEnabled', v)}
+              />
+            </SettingRow>
+          </SectionCard>
+
+          {/* Border Customization */}
+          <SectionCard>
+            <SectionHeader 
+              icon={Square} 
+              title="Border"
+              toggle={{
+                checked: customization.borderEnabled,
+                onCheckedChange: (v) => updateField('borderEnabled', v)
+              }}
+            />
+            
+            {customization.borderEnabled && (
+              <>
+                <SettingRow label="Border Color">
+                  <ColorPicker
+                    value={customization.borderColor}
+                    onChange={(v) => updateField('borderColor', v)}
+                    defaultValue="#3B82F6"
+                  />
+                </SettingRow>
+                
+                <SettingRow label="Border Radius">
+                  <Slider
+                    value={customization.borderRadius}
+                    onChange={(v) => updateField('borderRadius', v)}
+                    min={0}
+                    max={50}
+                    defaultValue={16}
+                    suffix="px"
+                  />
+                </SettingRow>
+              </>
+            )}
+          </SectionCard>
+
+          {/* About Me */}
+          <SectionCard>
+            <SectionHeader 
+              icon={FileText} 
+              title="About Me"
+              toggle={{
+                checked: customization.aboutMeEnabled,
+                onCheckedChange: (v) => updateField('aboutMeEnabled', v)
+              }}
+            />
+            
+            {customization.aboutMeEnabled && (
+              <SettingRow label="About Me Content" vertical>
+                <div className="relative">
+                  <Textarea
+                    value={customization.aboutMeText}
+                    onChange={(e) => updateField('aboutMeText', e.target.value)}
+                    placeholder="Write about yourself... Markdown supported"
+                    maxLength={1024}
+                    rows={6}
+                    className="resize-none font-mono text-sm"
+                  />
+                  <span className="absolute bottom-2 right-2 text-xs text-muted-foreground">
+                    {customization.aboutMeText.length}/1024
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Supports Markdown: **bold**, *italic*, [links](url), `code`
+                </p>
+              </SettingRow>
+            )}
+          </SectionCard>
+
+          {/* Time Customization */}
+          <SectionCard>
+            <SectionHeader icon={Clock} title="Time" />
+            
+            <SettingRow label="Show Join Date">
+              <Switch
+                checked={customization.showJoinDate}
+                onCheckedChange={(v) => updateField('showJoinDate', v)}
+              />
+            </SettingRow>
+            
+            <SettingRow label="Time Format">
+              <SelectCustom
+                value={customization.timeFormat}
+                onChange={(v) => updateField('timeFormat', v)}
+                options={[
+                  { value: '12h', label: '12 Hour' },
+                  { value: '24h', label: '24 Hour' },
+                ]}
+              />
+            </SettingRow>
+            
+            <SettingRow label="Display Mode">
+              <SelectCustom
+                value={customization.displayMode}
+                onChange={(v) => updateField('displayMode', v)}
+                options={[
+                  { value: 'absolute', label: 'Absolute' },
+                  { value: 'relative', label: 'Relative' },
+                ]}
+              />
+            </SettingRow>
+          </SectionCard>
+
+          {/* Other Customization */}
+          <SectionCard>
+            <SectionHeader icon={Sparkles} title="Other" />
+            
+            <SettingRow label="Volume Control" description="Show audio volume slider">
+              <Switch
+                checked={customization.volumeControl}
+                onCheckedChange={(v) => updateField('volumeControl', v)}
+              />
+            </SettingRow>
+            
+            <SettingRow label="Title Animation">
+              <SelectCustom
+                value={customization.titleAnimation}
+                onChange={(v) => updateField('titleAnimation', v)}
+                options={[
+                  { value: 'none', label: 'None' },
+                  { value: 'typing', label: 'Typing' },
+                  { value: 'fade', label: 'Fade' },
+                  { value: 'slide', label: 'Slide' },
+                ]}
+              />
+            </SettingRow>
+            
+            <SettingRow label="Force Enter Screen" description="Premium only">
+              <Switch
+                checked={customization.forceEnterScreen}
+                onCheckedChange={(v) => updateField('forceEnterScreen', v)}
+                disabled={!isPremium}
+              />
+            </SettingRow>
+            
+            <SettingRow label="Show Profile Views">
+              <Switch
+                checked={customization.showViews}
+                onCheckedChange={(v) => updateField('showViews', v)}
+              />
+            </SettingRow>
+            
+            {customization.showViews && (
+              <>
+                <SettingRow label="Views Animation">
+                  <Switch
+                    checked={customization.viewsAnimation}
+                    onCheckedChange={(v) => updateField('viewsAnimation', v)}
+                  />
+                </SettingRow>
+                
+                {customization.viewsAnimation && (
+                  <SettingRow label="Animation Duration">
+                    <Slider
+                      value={customization.viewsAnimationDuration}
+                      onChange={(v) => updateField('viewsAnimationDuration', v)}
+                      min={500}
+                      max={3000}
+                      step={100}
+                      defaultValue={1000}
+                      suffix="ms"
+                    />
+                  </SettingRow>
+                )}
+              </>
+            )}
+            
+            <SettingRow label="Parallax Effect">
+              <Switch
+                checked={customization.parallaxEnabled}
+                onCheckedChange={(v) => updateField('parallaxEnabled', v)}
+              />
+            </SettingRow>
+            
+            {customization.parallaxEnabled && (
+              <>
+                <SettingRow label="Parallax Inverted">
+                  <Switch
+                    checked={customization.parallaxInverted}
+                    onCheckedChange={(v) => updateField('parallaxInverted', v)}
+                  />
+                </SettingRow>
+                
+                <SettingRow label="Parallax Intensity">
+                  <Slider
+                    value={customization.parallaxIntensity}
+                    onChange={(v) => updateField('parallaxIntensity', v)}
+                    min={10}
+                    max={100}
+                    defaultValue={50}
+                    suffix="%"
+                  />
+                </SettingRow>
+              </>
+            )}
+            
+            <SettingRow label="Allow Feedback">
+              <Switch
+                checked={customization.allowFeedback}
+                onCheckedChange={(v) => updateField('allowFeedback', v)}
+              />
+            </SettingRow>
+            
+            <SettingRow label="Allow Comments">
+              <Switch
+                checked={customization.allowComments}
+                onCheckedChange={(v) => updateField('allowComments', v)}
+              />
+            </SettingRow>
+            
+            {customization.allowComments && (
+              <SettingRow label="Public Comments">
+                <Switch
+                  checked={customization.commentsPublic}
+                  onCheckedChange={(v) => updateField('commentsPublic', v)}
+                />
+              </SettingRow>
+            )}
+          </SectionCard>
+
+          {/* Layout/Theme */}
+          <SectionCard>
+            <SectionHeader icon={LayoutGrid} title="Layout" />
+            
+            <SettingRow label="Theme" vertical>
+              <ThemeSelector
+                value={customization.theme}
+                onChange={(v) => updateField('theme', v)}
+              />
+            </SettingRow>
+          </SectionCard>
+        </div>
+
+        {/* Fixed Save Button */}
+        <div className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-md border-t border-border p-4 z-40">
+          <div className="container mx-auto max-w-4xl flex items-center justify-between">
+            <Button
+              variant="outline"
+              onClick={() => navigate(`/profile/${profile.slug}`)}
+            >
+              View Profile
             </Button>
-          ))}
-        </div>
-
-        {/* ---------- Form ---------- */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* ----- Basic Info ----- */}
-          {activeTab === 'basic' && (
-            <>
-              {/* Basic Info Card */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Basic Information</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Username
-                      </label>
-                      <Input
-                        value={formData.username}
-                        disabled
-                        className="bg-muted"
-                      />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Cannot be changed
-                      </p>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Display Name
-                      </label>
-                      <Input
-                        value={formData.displayName}
-                        onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            displayName: e.target.value,
-                          }))
-                        }
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Headline
-                    </label>
-                    <Input
-                      value={formData.headline}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          headline: e.target.value,
-                        }))
-                      }
-                      maxLength={100}
-                    />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {formData.headline.length}/100
-                    </p>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Description
-                    </label>
-                    <Textarea
-                      value={formData.description}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          description: e.target.value,
-                        }))
-                      }
-                      rows={4}
-                      maxLength={1000}
-                      className="resize-none"
-                    />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {formData.description.length}/1000
-                    </p>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Bio
-                    </label>
-                    <Textarea
-                      value={formData.bio}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          bio: e.target.value,
-                        }))
-                      }
-                      rows={3}
-                      maxLength={500}
-                      className="resize-none"
-                    />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {formData.bio.length}/500
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Contact Methods Card */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Contact Methods</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex gap-2">
-                    <select
-                      value={newContact.type}
-                      onChange={(e) =>
-                        setNewContact((prev) => ({
-                          ...prev,
-                          type: e.target.value,
-                        }))
-                      }
-                      className="px-3 py-2 rounded-lg border-2 border-border bg-background"
-                    >
-                      <option value="email">Email</option>
-                      <option value="phone">Phone</option>
-                      <option value="discord">Discord</option>
-                      <option value="telegram">Telegram</option>
-                      <option value="other">Other</option>
-                    </select>
-                    <Input
-                      value={newContact.value}
-                      onChange={(e) =>
-                        setNewContact((prev) => ({
-                          ...prev,
-                          value: e.target.value,
-                        }))
-                      }
-                      placeholder="Value"
-                    />
-                    <Input
-                      value={newContact.label}
-                      onChange={(e) =>
-                        setNewContact((prev) => ({
-                          ...prev,
-                          label: e.target.value,
-                        }))
-                      }
-                      placeholder="Label"
-                    />
-                    <Button
-                      type="button"
-                      onClick={handleAddContact}
-                      size="sm"
-                    >
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </div>
-
-                  {formData.contactMethods.length > 0 && (
-                    <div className="space-y-2">
-                      {formData.contactMethods.map((contact, idx) => (
-                        <div
-                          key={idx}
-                          className="flex items-center justify-between p-3 border rounded-lg"
-                        >
-                          <div>
-                            <p className="text-sm font-medium capitalize">
-                              {contact.type}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {contact.value}
-                            </p>
-                          </div>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleRemoveContact(idx)}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              {/* Location & Social Card */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Location & Social</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Location
-                    </label>
-                    <Input
-                      value={formData.location}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          location: e.target.value,
-                        }))
-                      }
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Website
-                    </label>
-                    <Input
-                      value={formData.website}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          website: e.target.value,
-                        }))
-                      }
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      GitHub
-                    </label>
-                    <Input
-                      value={formData.github || ''}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          github: e.target.value,
-                        }))
-                      }
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      LinkedIn
-                    </label>
-                    <Input
-                      value={formData.linkedin || ''}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          linkedin: e.target.value,
-                        }))
-                      }
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Twitter
-                    </label>
-                    <Input
-                      value={formData.twitter || ''}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          twitter: e.target.value,
-                        }))
-                      }
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            </>
-          )}
-
-          {/* ----- Images ----- */}
-          {activeTab === 'images' && (
-            <>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Profile Pictures</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Avatar URL
-                    </label>
-                    <Input
-                      value={formData.avatarUrl}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          avatarUrl: e.target.value,
-                        }))
-                      }
-                      placeholder="https://i.imgur.com/avatar.jpg"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Banner URL
-                    </label>
-                    <Input
-                      value={formData.bannerUrl}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          bannerUrl: e.target.value,
-                        }))
-                      }
-                      placeholder="https://i.imgur.com/banner.jpg"
-                    />
-                  </div>
-
-                  <PremiumFeature>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Discovery Card Image{' '}
-                        <Badge variant="secondary">Premium</Badge>
-                      </label>
-                      <Input
-                        value={formData.cardImageUrl}
-                        onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            cardImageUrl: e.target.value,
-                          }))
-                        }
-                        placeholder="https://i.imgur.com/card.jpg"
-                        disabled={!profile.isPremium}
-                      />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Custom image for discovery cards
-                      </p>
-                    </div>
-                  </PremiumFeature>
-
-                  <PremiumFeature>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Profile Background{' '}
-                        <Badge variant="secondary">Premium</Badge>
-                      </label>
-                      <Input
-                        value={formData.profileBackgroundUrl}
-                        onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            profileBackgroundUrl: e.target.value,
-                          }))
-                        }
-                        placeholder="https://i.imgur.com/background.jpg"
-                        disabled={!profile.isPremium}
-                      />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Full‑page background image
-                      </p>
-                    </div>
-                  </PremiumFeature>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Gallery{' '}
-                      <Badge variant="secondary">
-                        {formData.profileImages.length}/
-                        {profile.isPremium ? 20 : 5}
-                      </Badge>
-                    </label>
-                    <div className="flex gap-2 mb-2">
-                      <Input
-                        value={newImage}
-                        onChange={(e) => setNewImage(e.target.value)}
-                        placeholder="Image URL"
-                      />
-                      <Button
-                        type="button"
-                        onClick={handleAddImage}
-                        size="sm"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </div>
-
-                    {formData.profileImages.length > 0 && (
-                      <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
-                        {formData.profileImages.map((img, idx) => (
-                          <div
-                            key={idx}
-                            className="relative group"
-                          >
-                            <img
-                              src={img}
-                              alt=""
-                              className="w-full h-24 object-cover rounded border"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveImage(idx)}
-                              className="absolute top-1 right-1 p-1 bg-destructive rounded-full opacity-0 group-hover:opacity-100"
-                            >
-                              <X className="h-3 w-3 text-white" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </>
-          )}
-
-          {/* ----- Styling ----- */}
-          {activeTab === 'styling' && (
-            <>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Theme & Colors</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {/* Preset Themes */}
-                  <div>
-                    <label className="block text-sm font-medium mb-3">
-                      Preset Themes
-                    </label>
-                    <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
-                      {THEMES.map((theme) => (
-                        <button
-                          key={theme.name}
-                          type="button"
-                          onClick={() =>
-                            setFormData((prev) => ({
-                              ...prev,
-                              customization: {
-                                ...prev.customization,
-                                theme: theme.name.toLowerCase(),
-                                primaryColor: theme.primary,
-                                secondaryColor: theme.secondary,
-                              },
-                            }))
-                          }
-                          className={`p-4 rounded-lg border-2 ${
-                            formData.customization.theme ===
-                            theme.name.toLowerCase()
-                              ? 'border-primary-glow'
-                              : 'border-border'
-                          }`}
-                        >
-                          <div className="flex flex-col items-center space-y-2">
-                            <div className="flex space-x-1">
-                              <div
-                                className="w-6 h-6 rounded-full"
-                                style={{ backgroundColor: theme.primary }}
-                              />
-                              <div
-                                className="w-6 h-6 rounded-full"
-                                style={{ backgroundColor: theme.secondary }}
-                              />
-                            </div>
-                            <span className="text-xs">{theme.name}</span>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Premium Color Pickers */}
-                  <PremiumFeature>
-                    <div className="grid md:grid-cols-3 gap-4">
-                      {/* Primary */}
-                      <div>
-                        <label className="block text-sm font-medium mb-2">
-                          Primary Color{' '}
-                          <Badge variant="secondary">Premium</Badge>
-                        </label>
-                        <div className="flex gap-2">
-                          <Input
-                            type="color"
-                            value={formData.customization.primaryColor}
-                            onChange={(e) =>
-                              setFormData((prev) => ({
-                                ...prev,
-                                customization: {
-                                  ...prev.customization,
-                                  primaryColor: e.target.value,
-                                },
-                              }))
-                            }
-                            disabled={!profile.isPremium}
-                            className="w-16 h-10"
-                          />
-                          <Input
-                            value={formData.customization.primaryColor}
-                            onChange={(e) =>
-                              setFormData((prev) => ({
-                                ...prev,
-                                customization: {
-                                  ...prev.customization,
-                                  primaryColor: e.target.value,
-                                },
-                              }))
-                            }
-                            disabled={!profile.isPremium}
-                            placeholder="#3B82F6"
-                          />
-                        </div>
-                      </div>
-
-                      {/* Secondary */}
-                      <div>
-                        <label className="block text-sm font-medium mb-2">
-                          Secondary Color{' '}
-                          <Badge variant="secondary">Premium</Badge>
-                        </label>
-                        <div className="flex gap-2">
-                          <Input
-                            type="color"
-                            value={formData.customization.secondaryColor}
-                            onChange={(e) =>
-                              setFormData((prev) => ({
-                                ...prev,
-                                customization: {
-                                  ...prev.customization,
-                                  secondaryColor: e.target.value,
-                                },
-                              }))
-                            }
-                            disabled={!profile.isPremium}
-                            className="w-16 h-10"
-                          />
-                          <Input
-                            value={formData.customization.secondaryColor}
-                            onChange={(e) =>
-                              setFormData((prev) => ({
-                                ...prev,
-                                customization: {
-                                  ...prev.customization,
-                                  secondaryColor: e.target.value,
-                                },
-                              }))
-                            }
-                            disabled={!profile.isPremium}
-                            placeholder="#8B5CF6"
-                          />
-                        </div>
-                      </div>
-
-                      {/* Accent */}
-                      <div>
-                        <label className="block text-sm font-medium mb-2">
-                          Accent Color{' '}
-                          <Badge variant="secondary">Premium</Badge>
-                        </label>
-                        <div className="flex gap-2">
-                          <Input
-                            type="color"
-                            value={formData.customization.accentColor}
-                            onChange={(e) =>
-                              setFormData((prev) => ({
-                                ...prev,
-                                customization: {
-                                  ...prev.customization,
-                                  accentColor: e.target.value,
-                                },
-                              }))
-                            }
-                            disabled={!profile.isPremium}
-                            className="w-16 h-10"
-                          />
-                          <Input
-                            value={formData.customization.accentColor}
-                            onChange={(e) =>
-                              setFormData((prev) => ({
-                                ...prev,
-                                customization: {
-                                  ...prev.customization,
-                                  accentColor: e.target.value,
-                                },
-                              }))
-                            }
-                            disabled={!profile.isPremium}
-                            placeholder="#EC4899"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </PremiumFeature>
-
-                  {/* Positioning */}
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Positioning
-                    </label>
-                    <div className="grid grid-cols-3 gap-3">
-                      {['left', 'center', 'right'].map((pos) => (
-                        <button
-                          key={pos}
-                          type="button"
-                          onClick={() =>
-                            setFormData((prev) => ({
-                              ...prev,
-                              customization: {
-                                ...prev.customization,
-                                positioning: pos,
-                              },
-                            }))
-                          }
-                          className={`p-4 rounded-lg border-2 ${
-                            formData.customization.positioning === pos
-                              ? 'border-primary-glow bg-primary/10'
-                              : 'border-border'
-                          }`}
-                        >
-                          <div className="capitalize">{pos}</div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Background Type – Premium */}
-                  <PremiumFeature>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Background Type{' '}
-                        <Badge variant="secondary">Premium</Badge>
-                      </label>
-                      <div className="grid grid-cols-3 gap-3">
-                        {BACKGROUND_TYPES.map((type) => (
-                          <button
-                            key={type}
-                            type="button"
-                            onClick={() =>
-                              setFormData((prev) => ({
-                                ...prev,
-                                customization: {
-                                  ...prev.customization,
-                                  backgroundType: type,
-                                },
-                              }))
-                            }
-                            disabled={!profile.isPremium}
-                            className={`p-4 rounded-lg border-2 capitalize ${
-                              formData.customization.backgroundType ===
-                              type
-                                ? 'border-primary-glow bg-primary/10'
-                                : 'border-border'
-                            }`}
-                          >
-                            {type}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </PremiumFeature>
-                </CardContent>
-              </Card>
-            </>
-          )}
-
-          {/* ----- Advanced ----- */}
-          {activeTab === 'advanced' && (
-            <PremiumFeature>
-              <Card>
-                <CardHeader>
-                  <CardTitle>
-                    Advanced Styling{' '}
-                    <Badge variant="secondary" className="ml-2">
-                      Premium
-                    </Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {/* Card Style */}
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Card Style
-                    </label>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                      {CARD_STYLES.map((style) => (
-                        <button
-                          key={style}
-                          type="button"
-                          onClick={() =>
-                            setFormData((prev) => ({
-                              ...prev,
-                              customization: {
-                                ...prev.customization,
-                                cardStyle: style,
-                              },
-                            }))
-                          }
-                          disabled={!profile.isPremium}
-                          className={`p-4 rounded-lg border-2 capitalize ${
-                            formData.customization.cardStyle === style
-                              ? 'border-primary-glow bg-primary/10'
-                              : 'border-border'
-                          }`}
-                        >
-                          {style}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Border Radius, Shadow, Animation Speed */}
-                  <div className="grid md:grid-cols-3 gap-4">
-                    {/* Border Radius */}
-                    <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Border Radius
-                      </label>
-                      <select
-                        value={formData.customization.borderRadius}
-                        onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            customization: {
-                              ...prev.customization,
-                              borderRadius: e.target.value,
-                            },
-                          }))
-                        }
-                        className="w-full px-3 py-2 rounded-lg border-2 border-border bg-background"
-                      >
-                        <option value="none">None</option>
-                        <option value="small">Small</option>
-                        <option value="medium">Medium</option>
-                        <option value="large">Large</option>
-                        <option value="full">Full</option>
-                      </select>
-                    </div>
-
-                    {/* Shadow Intensity */}
-                    <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Shadow Intensity
-                      </label>
-                      <select
-                        value={formData.customization.shadowIntensity}
-                        onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            customization: {
-                              ...prev.customization,
-                              shadowIntensity: e.target.value,
-                            },
-                          }))
-                        }
-                        className="w-full px-3 py-2 rounded-lg border-2 border-border bg-background"
-                      >
-                        <option value="none">None</option>
-                        <option value="light">Light</option>
-                        <option value="medium">Medium</option>
-                        <option value="heavy">Heavy</option>
-                      </select>
-                    </div>
-
-                    {/* Animation Speed */}
-                    <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Animation Speed
-                      </label>
-                      <select
-                        value={formData.customization.animationSpeed}
-                        onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            customization: {
-                              ...prev.customization,
-                              animationSpeed: e.target.value,
-                            },
-                          }))
-                        }
-                        className="w-full px-3 py-2 rounded-lg border-2 border-border bg-background"
-                      >
-                        <option value="slow">Slow</option>
-                        <option value="normal">Normal</option>
-                        <option value="fast">Fast</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Toggles */}
-                  <div className="grid md:grid-cols-2 gap-4">
-                    {/* Show Social Icons */}
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        id="showSocialIcons"
-                        checked={formData.customization.showSocialIcons}
-                        onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            customization: {
-                              ...prev.customization,
-                              showSocialIcons: e.target.checked,
-                            },
-                          }))
-                        }
-                        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                      />
-                      <label
-                        htmlFor="showSocialIcons"
-                        className="text-sm font-medium"
-                      >
-                        Show Social Icons
-                      </label>
-                    </div>
-
-                    {/* Compact Mode */}
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        id="compactMode"
-                        checked={formData.customization.compactMode}
-                        onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            customization: {
-                              ...prev.customization,
-                              compactMode: e.target.checked,
-                            },
-                          }))
-                        }
-                        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                      />
-                      <label
-                        htmlFor="compactMode"
-                        className="text-sm font-medium"
-                      >
-                        Compact Mode
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* Custom CSS */}
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Custom CSS (Advanced)
-                    </label>
-                    <Textarea
-                      value={formData.customization.customCSS}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          customization: {
-                            ...prev.customization,
-                            customCSS: e.target.value,
-                          },
-                        }))
-                      }
-                      placeholder="/* Your CSS here */"
-                      rows={5}
-                      className="font-mono"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            </PremiumFeature>
-          )}
-
-          {/* ---------- Submit Button ---------- */}
-          <div className="flex justify-end pt-4">
             <Button
-              type="submit"
-              disabled={loading}
-              className="gap-2"
+              variant="glow"
+              onClick={handleSave}
+              disabled={saving}
+              className="min-w-[120px]"
             >
-              {loading ? (
-                <>
-                  <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full" />
-                  Saving...
-                </>
+              {saving ? (
+                <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
               ) : (
                 <>
-                  <Save className="h-4 w-4" />
-                  Save Changes
+                  <Save className="h-4 w-4 mr-2" />
+                  Save
                 </>
               )}
             </Button>
           </div>
-        </form>
+        </div>
       </div>
+
+      {/* Modals */}
+      <AvatarManagerModal
+        isOpen={avatarModalOpen}
+        onClose={() => setAvatarModalOpen(false)}
+        avatarUrl={customization.avatarUrl}
+        onSave={(url) => updateField('avatarUrl', url)}
+      />
+      
+      <BackgroundManagerModal
+        isOpen={backgroundModalOpen}
+        onClose={() => setBackgroundModalOpen(false)}
+        backgrounds={customization.backgrounds}
+        shuffle={customization.backgroundShuffle}
+        loop={customization.backgroundLoop}
+        duration={customization.backgroundDuration}
+        isPremium={isPremium}
+        onSave={(data) => {
+          updateField('backgrounds', data.backgrounds)
+          updateField('backgroundShuffle', data.shuffle)
+          updateField('backgroundLoop', data.loop)
+          updateField('backgroundDuration', data.duration)
+        }}
+      />
+      
+      <AudioManagerModal
+        isOpen={audioModalOpen}
+        onClose={() => setAudioModalOpen(false)}
+        audios={customization.audios}
+        shuffle={customization.audioShuffle}
+        showPlayer={customization.audioPlayer}
+        showVolume={customization.audioVolume}
+        sticky={customization.audioSticky}
+        isPremium={isPremium}
+        onSave={(data) => {
+          updateField('audios', data.audios)
+          updateField('audioShuffle', data.shuffle)
+          updateField('audioPlayer', data.showPlayer)
+          updateField('audioVolume', data.showVolume)
+          updateField('audioSticky', data.sticky)
+        }}
+      />
+      
+      <CursorManagerModal
+        isOpen={cursorModalOpen}
+        onClose={() => setCursorModalOpen(false)}
+        cursor={customization.customCursor}
+        pointerCursor={customization.customPointerCursor}
+        isPremium={isPremium}
+        onSave={(data) => {
+          updateField('customCursor', data.cursor)
+          updateField('customPointerCursor', data.pointerCursor)
+        }}
+      />
     </div>
   )
 }
