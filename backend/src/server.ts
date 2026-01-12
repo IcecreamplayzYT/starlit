@@ -92,6 +92,7 @@ import chatRoutes from './routes/chat.js';
 import discoverRoutes from './routes/discover.js';
 import viewsRoutes from './routes/views.js';
 import premiumRoutes from './routes/premium.js';
+import uploadRoutes from './routes/uploads.js';
 
 dotenv.config();
 
@@ -119,6 +120,7 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/discover', discoverRoutes);
 app.use('/api/views', viewsRoutes);
 app.use('/api/premium', premiumRoutes);
+app.use('/api/uploads', uploadRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
