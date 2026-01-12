@@ -4,6 +4,9 @@ import { api } from '@/lib/api'
 interface User {
   id: string
   email: string
+  user_metadata?: {
+    name?: string
+  }
 }
 
 interface AuthContextType {
@@ -33,7 +36,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const fetchUser = async () => {
     try {
       const response = await api.get('/auth/me')
-      setUser(response.data.user)
+      setUser(response.data.user as User)
     } catch (error) {
       localStorage.removeItem('auth_token')
       delete api.defaults.headers.common['Authorization']
@@ -44,20 +47,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string) => {
     const response = await api.post('/auth/login', { email, password })
-    const { token, user } = response.data
+    const { token, user: userData } = response.data
     
     localStorage.setItem('auth_token', token)
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    setUser(user)
+    setUser(userData as User)
   }
 
   const register = async (email: string, password: string, name: string) => {
     const response = await api.post('/auth/register', { email, password, name })
-    const { token, user } = response.data
+    const { token, user: userData } = response.data
     
     localStorage.setItem('auth_token', token)
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    setUser(user)
+    setUser(userData as User)
   }
 
   const logout = () => {
