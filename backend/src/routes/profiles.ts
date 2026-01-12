@@ -355,15 +355,93 @@ const createProfileSchema = z.object({
     .optional(),
   customization: z
     .object({
+      // Legacy fields
       primaryColor: z.string().optional(),
       secondaryColor: z.string().optional(),
       positioning: z.enum(['left', 'center', 'right']).optional(),
-      theme: z.enum(['blue', 'purple', 'green', 'red', 'orange']).optional(),
-      backgroundType: z.enum(['solid', 'gradient', 'image']).optional(),
+      fontStyle: z.enum(['sans-serif', 'serif', 'monospace']).optional(),
+      cardStyle: z.enum(['modern', 'minimal', 'glassmorphism', 'neumorphism']).optional(),
+      shadowIntensity: z.enum(['none', 'light', 'medium', 'heavy']).optional(),
+      animationSpeed: z.enum(['none', 'slow', 'normal', 'fast']).optional(),
+      enableParticles: z.boolean().optional(),
+      showSocialIcons: z.boolean().optional(),
+      compactMode: z.boolean().optional(),
+      hideStats: z.boolean().optional(),
+      customCSS: z.string().optional(),
+
+      // General Settings
+      avatarRadius: z.number().min(0).max(100).optional(),
+      profileOpacity: z.number().min(0).max(100).optional(),
+      profileBlur: z.number().min(0).max(20).optional(),
+      backgroundEffect: z.enum(['none', 'particles', 'snow', 'rain', 'stars']).optional(),
+      usernameEffect: z.enum(['none', 'glow', 'rainbow', 'typing', 'wave']).optional(),
+      enterText: z.string().max(50).optional(),
+
+      // Color Settings
+      accentColor: z.string().optional(),
+      textColor: z.string().optional(),
+      secondaryTextColor: z.string().optional(),
       backgroundColor: z.string().optional(),
+      gradientEnabled: z.boolean().optional(),
+      gradientColors: z.array(z.string()).max(5).optional(),
+      backgroundType: z.enum(['solid', 'gradient', 'image']).optional(),
       backgroundGradient: z.string().optional(),
+
+      // Border Settings
+      borderEnabled: z.boolean().optional(),
+      borderColor: z.string().optional(),
+      borderRadius: z.number().min(0).max(50).optional(),
+
+      // About Me Settings
+      aboutMeEnabled: z.boolean().optional(),
+      aboutMeText: z.string().max(1024).optional(),
+      aboutMeAdvanced: z.boolean().optional(),
+
+      // Time Settings
+      showJoinDate: z.boolean().optional(),
+      timeFormat: z.enum(['12h', '24h']).optional(),
+      displayMode: z.enum(['absolute', 'relative']).optional(),
+      timeSchema: z.string().max(50).optional(),
+
+      // Other Settings
+      volumeControl: z.boolean().optional(),
+      titleAnimation: z.enum(['none', 'typing', 'fade', 'slide']).optional(),
+      forceEnterScreen: z.boolean().optional(),
+      showViews: z.boolean().optional(),
+      viewsAnimation: z.boolean().optional(),
+      viewsAnimationDuration: z.number().min(100).max(5000).optional(),
+      parallaxEnabled: z.boolean().optional(),
+      parallaxInverted: z.boolean().optional(),
+      parallaxIntensity: z.number().min(0).max(100).optional(),
+      allowFeedback: z.boolean().optional(),
+      allowComments: z.boolean().optional(),
+      commentsPublic: z.boolean().optional(),
+
+      // Theme/Layout
+      theme: z.enum(['default', 'modern', 'simplistic', 'portfolio', 'blue', 'purple', 'green', 'red', 'orange', 'cyan', 'pink', 'teal']).optional(),
     })
     .optional(),
+
+  // Media Managers
+  backgrounds: z.array(z.object({
+    url: z.string().url(),
+    position: z.string().optional()
+  })).max(3).optional(),
+  backgroundShuffle: z.boolean().optional(),
+  backgroundLoop: z.boolean().optional(),
+  backgroundDuration: z.number().min(1).max(60).optional(),
+
+  audios: z.array(z.object({
+    url: z.string().url(),
+    name: z.string()
+  })).max(5).optional(),
+  audioShuffle: z.boolean().optional(),
+  audioPlayer: z.boolean().optional(),
+  audioVolume: z.boolean().optional(),
+  audioSticky: z.boolean().optional(),
+
+  customCursor: z.string().url().optional().or(z.literal('')),
+  customPointerCursor: z.string().url().optional().or(z.literal('')),
   github: z.string().optional(),
   linkedin: z.string().optional(),
   twitter: z.string().optional(),
@@ -382,6 +460,44 @@ const updateProfileSchema = createProfileSchema
     cardImageUrl: z.string().url().optional().or(z.literal('')),
     profileBackgroundUrl: z.string().url().optional().or(z.literal('')),
   });
+
+// Premium field validation for media limits
+const validateMediaLimits = (profile: any, data: any) => {
+  const errors: string[] = [];
+  
+  // Background limits: 1 for free, 3 for premium
+  if (data.backgrounds) {
+    const maxBackgrounds = profile.isPremium ? 3 : 1;
+    if (data.backgrounds.length > maxBackgrounds) {
+      errors.push(`You can only have up to ${maxBackgrounds} background${maxBackgrounds > 1 ? 's' : ''}. ${!profile.isPremium ? 'Upgrade to premium for more.' : ''}`);
+    }
+  }
+  
+  // Audio limits: 3 for free, 5 for premium
+  if (data.audios) {
+    const maxAudios = profile.isPremium ? 5 : 3;
+    if (data.audios.length > maxAudios) {
+      errors.push(`You can only have up to ${maxAudios} audio tracks. ${!profile.isPremium ? 'Upgrade to premium for more.' : ''}`);
+    }
+  }
+  
+  // Custom cursors are premium only
+  if (!profile.isPremium && (data.customCursor || data.customPointerCursor)) {
+    errors.push('Custom cursors are a premium feature.');
+  }
+  
+  // Force enter screen is premium only
+  if (!profile.isPremium && data.customization?.forceEnterScreen) {
+    errors.push('Force enter screen is a premium feature.');
+  }
+  
+  // Enter text is premium only
+  if (!profile.isPremium && data.customization?.enterText) {
+    errors.push('Custom enter text is a premium feature.');
+  }
+  
+  return errors;
+};
 
 // Remove null/undefined values from object
 function stripNulls<T extends Record<string, any>>(obj: T): Partial<T> {
@@ -617,10 +733,25 @@ router.patch('/:id', authMiddleware, async (req: any, res) => {
       }
     }
 
+    // Validate media limits based on premium status
+    const mediaErrors = validateMediaLimits(profile, data);
+    if (mediaErrors.length > 0) {
+      return res.status(400).json({
+        error: 'Media validation failed',
+        details: mediaErrors,
+      });
+    }
+
     // Remove premium-only fields for non-premium users
     if (!profile.isPremium) {
       delete data.cardImageUrl;
       delete data.profileBackgroundUrl;
+      delete data.customCursor;
+      delete data.customPointerCursor;
+      if (data.customization) {
+        delete data.customization.forceEnterScreen;
+        delete data.customization.enterText;
+      }
     }
 
     // Sanitize verificationBadge - remove if null or invalid
