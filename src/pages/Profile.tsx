@@ -1,490 +1,15 @@
-// import { useState, useEffect } from 'react'
-// import { useParams, Link, useNavigate } from 'react-router-dom'
-// import { MapPin, ExternalLink, Github, Linkedin, Twitter, Globe, Clock, Heart, Settings, Mail, Phone, MessageSquare } from 'lucide-react'
-// import { Button } from '@/components/ui/button'
-// import { Badge } from '@/components/ui/badge'
-// import { Card, CardContent } from '@/components/ui/card'
-// import { useAuth } from '@/hooks/useAuth'
-// import { useToast } from '@/hooks/use-toast'
-// import { api } from '@/lib/api'
-
-// interface Project {
-//   _id: string
-//   title: string
-//   description?: string
-//   images?: string[]
-//   tools?: string[]
-//   year?: number
-//   externalLink?: string
-// }
-
-// interface ContactMethod {
-//   type: string
-//   value: string
-//   label?: string
-// }
-
-// interface Profile {
-//   _id: string
-//   slug: string
-//   username: string
-//   displayName: string
-//   name: string
-//   headline?: string
-//   bio?: string
-//   description?: string
-//   avatarUrl?: string
-//   bannerUrl?: string
-//   profileImages?: string[]
-//   location?: string
-//   role?: string
-//   tools?: string[]
-//   website?: string
-//   github?: string
-//   linkedin?: string
-//   twitter?: string
-//   contactMethods?: ContactMethod[]
-//   customization?: {
-//     primaryColor?: string
-//     secondaryColor?: string
-//     positioning?: string
-//     theme?: string
-//   }
-//   approved: boolean
-//   likes: number
-//   isPremium: boolean
-//   projects?: Project[]
-//   userId: any
-// }
-
-// export default function Profile() {
-//   const { slug } = useParams<{ slug: string }>()
-//   const { user } = useAuth()
-//   const navigate = useNavigate()
-//   const { toast } = useToast()
-//   const [profile, setProfile] = useState<Profile | null>(null)
-//   const [loading, setLoading] = useState(true)
-//   const [notFound, setNotFound] = useState(false)
-//   const [hasLiked, setHasLiked] = useState(false)
-//   const [likeCount, setLikeCount] = useState(0)
-//   const [isOwner, setIsOwner] = useState(false)
-
-//   useEffect(() => {
-//     if (slug) {
-//       fetchProfile()
-//     }
-//   }, [slug])
-
-//   useEffect(() => {
-//     if (profile && user) {
-//       checkIfLiked()
-//       checkIfOwner()
-//     }
-//   }, [profile, user])
-
-//   const fetchProfile = async () => {
-//     try {
-//       const response = await api.get(`/profiles/slug/${slug}`)
-//       setProfile(response.data)
-//       setLikeCount(response.data.likes || 0)
-      
-//       // Track profile view
-//       api.post('/analytics', {
-//         profileId: response.data._id,
-//         eventType: 'profile_view'
-//       }).catch(() => {})
-//     } catch (error: any) {
-//       // Log errors for debugging redirect/authorization issues
-//       try {
-//         console.error('fetchProfile error', {
-//           slug,
-//           status: error.response?.status,
-//           data: error.response?.data,
-//           message: error.message
-//         })
-//       } catch (e) {
-//         console.error('Error while logging fetchProfile error', e)
-//       }
-
-//       if (error.response?.status === 404) {
-//         setNotFound(true)
-//       }
-//     } finally {
-//       setLoading(false)
-//     }
-//   }
-
-//   const checkIfLiked = async () => {
-//     if (!user || !profile) return
-//     try {
-//       const response = await api.get(`/likes/check/${profile._id}`)
-//       setHasLiked(response.data.liked)
-//     } catch (error) {
-//       console.error('Failed to check like status:', error)
-//     }
-//   }
-
-//   const checkIfOwner = () => {
-//     if (!user || !profile) return
-//     setIsOwner(profile.userId._id === user.id || profile.userId === user.id)
-//   }
-
-//   const handleLike = async () => {
-//     if (!user) {
-//       toast({
-//         title: "Sign in required",
-//         description: "Please sign in to like profiles",
-//         variant: "destructive"
-//       })
-//       navigate('/auth')
-//       return
-//     }
-
-//     if (!profile) return
-
-//     try {
-//       if (hasLiked) {
-//         await api.delete(`/likes/${profile._id}`)
-//         setHasLiked(false)
-//         setLikeCount(prev => prev - 1)
-//         toast({
-//           title: "Unliked",
-//           description: "Removed from your liked profiles"
-//         })
-//       } else {
-//         await api.post('/likes', { profileId: profile._id })
-//         setHasLiked(true)
-//         setLikeCount(prev => prev + 1)
-//         toast({
-//           title: "Liked!",
-//           description: "Added to your liked profiles"
-//         })
-//       }
-//     } catch (error: any) {
-//       toast({
-//         title: "Error",
-//         description: error.response?.data?.error || "Failed to update like",
-//         variant: "destructive"
-//       })
-//     }
-//   }
-
-//   const getContactIcon = (type: string) => {
-//     switch (type) {
-//       case 'email': return <Mail className="h-4 w-4" />
-//       case 'phone': return <Phone className="h-4 w-4" />
-//       case 'discord': return <MessageSquare className="h-4 w-4" />
-//       case 'telegram': return <MessageSquare className="h-4 w-4" />
-//       default: return <ExternalLink className="h-4 w-4" />
-//     }
-//   }
-
-//   const getInitials = (name: string) => {
-//     return name
-//       .split(' ')
-//       .map(n => n[0])
-//       .join('')
-//       .toUpperCase()
-//       .slice(0, 2)
-//   }
-
-//   if (loading) {
-//     return (
-//       <div className="min-h-screen pt-24 px-4 flex items-center justify-center">
-//         <div className="text-center">
-//           <div className="animate-spin h-12 w-12 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-//           <p className="text-muted-foreground">Loading profile...</p>
-//         </div>
-//       </div>
-//     )
-//   }
-
-//   if (notFound) {
-//     return (
-//       <div className="min-h-screen pt-24 px-4 flex items-center justify-center">
-//         <div className="text-center">
-//           <h1 className="text-4xl font-bold mb-4">Profile Not Found</h1>
-//           <p className="text-muted-foreground mb-8">
-//             The profile you're looking for doesn't exist or has been removed.
-//           </p>
-//           <Button variant="glow" asChild>
-//             <Link to="/discover">Discover Other Creators</Link>
-//           </Button>
-//         </div>
-//       </div>
-//     )
-//   }
-
-//   if (!profile) return null
-
-//   const positioning = profile.customization?.positioning || 'center'
-//   const primaryColor = profile.customization?.primaryColor || '#3B82F6'
-
-//   return (
-//     <div className="min-h-screen pt-24 px-4">
-//       {/* Banner */}
-//       {profile.bannerUrl && (
-//         <div className="w-full h-64 mb-8">
-//           <img
-//             src={profile.bannerUrl}
-//             alt="Profile banner"
-//             className="w-full h-full object-cover rounded-lg"
-//           />
-//         </div>
-//       )}
-
-//       <div className="container mx-auto py-8 max-w-6xl">
-//         <div className={`grid lg:grid-cols-${positioning === 'center' ? '3' : '4'} gap-8`}>
-//           {/* Left Sidebar */}
-//           <div className={`lg:col-span-1 ${positioning === 'right' ? 'lg:order-2' : ''}`}>
-//             <Card className="sticky top-32">
-//               <CardContent className="p-6 text-center space-y-6">
-//                 <div className="relative mx-auto w-24 h-24">
-//                   {profile.avatarUrl ? (
-//                     <img
-//                       src={profile.avatarUrl}
-//                       alt={profile.displayName || profile.name}
-//                       className="w-full h-full rounded-full object-cover border-2 border-primary-glow shadow-glow"
-//                       style={{ borderColor: primaryColor }}
-//                     />
-//                   ) : (
-//                     <div 
-//                       className="w-full h-full rounded-full border-2 shadow-glow flex items-center justify-center text-primary-foreground font-bold text-xl"
-//                       style={{ 
-//                         background: `linear-gradient(to bottom right, ${primaryColor}, ${profile.customization?.secondaryColor || '#8B5CF6'})`,
-//                         borderColor: primaryColor
-//                       }}
-//                     >
-//                       {getInitials(profile.displayName || profile.name)}
-//                     </div>
-//                   )}
-//                   {profile.isPremium && (
-//                     <Badge className="absolute -bottom-2 left-1/2 transform -translate-x-1/2" variant="default">
-//                       Premium
-//                     </Badge>
-//                   )}
-//                 </div>
-
-//                 <div>
-//                   <h1 className="text-2xl font-bold mb-2" style={{ color: primaryColor }}>
-//                     {profile.displayName || profile.name}
-//                   </h1>
-//                   <p className="text-sm text-muted-foreground mb-1">@{profile.username}</p>
-//                   {profile.headline && (
-//                     <p className="text-muted-foreground">{profile.headline}</p>
-//                   )}
-//                   {profile.role && (
-//                     <Badge variant="outline" className="mt-2">{profile.role}</Badge>
-//                   )}
-//                 </div>
-
-//                 {/* Like Button */}
-//                 <Button
-//                   variant={hasLiked ? "glow" : "outline"}
-//                   size="sm"
-//                   onClick={handleLike}
-//                   className="w-full"
-//                   disabled={isOwner}
-//                 >
-//                   <Heart className={`h-4 w-4 mr-2 ${hasLiked ? 'fill-current' : ''}`} />
-//                   {hasLiked ? 'Liked' : 'Like'} ({likeCount})
-//                 </Button>
-
-//                 {isOwner && (
-//                   <Button variant="outline" size="sm" asChild className="w-full">
-//                     <Link to={`/profile/${profile.slug}/customize`}>
-//                       <Settings className="h-4 w-4 mr-2" />
-//                       Customize Profile
-//                     </Link>
-//                   </Button>
-//                 )}
-
-//                 {profile.location && (
-//                   <div className="flex items-center justify-center text-muted-foreground">
-//                     <MapPin className="h-4 w-4 mr-2" />
-//                     {profile.location}
-//                   </div>
-//                 )}
-
-//                 {profile.tools && profile.tools.length > 0 && (
-//                   <div>
-//                     <h3 className="text-sm font-semibold mb-3 text-left">Tools & Skills</h3>
-//                     <div className="flex flex-wrap gap-2">
-//                       {profile.tools.map((tool) => (
-//                         <Badge key={tool} variant="secondary" className="text-xs">
-//                           {tool}
-//                         </Badge>
-//                       ))}
-//                     </div>
-//                   </div>
-//                 )}
-
-//                 {/* Contact Methods */}
-//                 {profile.contactMethods && profile.contactMethods.length > 0 && (
-//                   <div className="space-y-2">
-//                     <h3 className="text-sm font-semibold text-left">Contact</h3>
-//                     {profile.contactMethods.map((contact, idx) => (
-//                       <div key={idx} className="text-left p-2 border border-border rounded-lg">
-//                         <div className="flex items-center space-x-2 text-sm">
-//                           {getContactIcon(contact.type)}
-//                           <div>
-//                             <p className="font-medium">{contact.label || contact.type}</p>
-//                             <p className="text-xs text-muted-foreground">{contact.value}</p>
-//                           </div>
-//                         </div>
-//                       </div>
-//                     ))}
-//                   </div>
-//                 )}
-
-//                 {/* Social Links */}
-//                 <div className="space-y-3">
-//                   {profile.website && (
-//                     <Button variant="outline" size="sm" asChild className="w-full">
-//                       <a href={profile.website} target="_blank" rel="noopener noreferrer">
-//                         <Globe className="h-4 w-4 mr-2" />
-//                         Website
-//                       </a>
-//                     </Button>
-//                   )}
-//                   {profile.github && (
-//                     <Button variant="outline" size="sm" asChild className="w-full">
-//                       <a href={`https://github.com/${profile.github}`} target="_blank" rel="noopener noreferrer">
-//                         <Github className="h-4 w-4 mr-2" />
-//                         GitHub
-//                       </a>
-//                     </Button>
-//                   )}
-//                   {profile.linkedin && (
-//                     <Button variant="outline" size="sm" asChild className="w-full">
-//                       <a href={`https://linkedin.com/in/${profile.linkedin}`} target="_blank" rel="noopener noreferrer">
-//                         <Linkedin className="h-4 w-4 mr-2" />
-//                         LinkedIn
-//                       </a>
-//                     </Button>
-//                   )}
-//                   {profile.twitter && (
-//                     <Button variant="outline" size="sm" asChild className="w-full">
-//                       <a href={`https://twitter.com/${profile.twitter}`} target="_blank" rel="noopener noreferrer">
-//                         <Twitter className="h-4 w-4 mr-2" />
-//                         Twitter
-//                       </a>
-//                     </Button>
-//                   )}
-//                 </div>
-//               </CardContent>
-//             </Card>
-//           </div>
-
-//           {/* Right Content */}
-//           <div className={`lg:col-span-2 space-y-8 ${positioning === 'right' ? 'lg:order-1' : ''}`}>
-//             {!profile.approved && (
-//               <Card className="border-secondary-glow bg-secondary/10">
-//                 <CardContent className="p-4 flex items-center space-x-3">
-//                   <Clock className="h-5 w-5 text-secondary-glow" />
-//                   <div>
-//                     <p className="font-medium">Profile Pending Review</p>
-//                     <p className="text-sm text-muted-foreground">
-//                       Your profile is pending admin approval and will be visible in Discover once reviewed.
-//                     </p>
-//                   </div>
-//                 </CardContent>
-//               </Card>
-//             )}
-
-//             {/* About/Description Section */}
-//             {(profile.bio || profile.description) && (
-//               <Card>
-//                 <CardContent className="p-6">
-//                   <h2 className="text-xl font-semibold mb-4" style={{ color: primaryColor }}>About</h2>
-//                   <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
-//                     {profile.description || profile.bio}
-//                   </p>
-//                 </CardContent>
-//               </Card>
-//             )}
-
-//             {/* Gallery Images */}
-//             {profile.profileImages && profile.profileImages.length > 0 && (
-//               <Card>
-//                 <CardContent className="p-6">
-//                   <h2 className="text-xl font-semibold mb-4" style={{ color: primaryColor }}>Gallery</h2>
-//                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-//                     {profile.profileImages.map((img, idx) => (
-//                       <img
-//                         key={idx}
-//                         src={img}
-//                         alt={`Gallery ${idx + 1}`}
-//                         className="w-full h-48 object-cover rounded-lg border border-border hover:scale-105 transition-transform cursor-pointer"
-//                       />
-//                     ))}
-//                   </div>
-//                 </CardContent>
-//               </Card>
-//             )}
-
-//             {/* Projects Section */}
-//             <Card>
-//               <CardContent className="p-6">
-//                 <h2 className="text-xl font-semibold mb-4" style={{ color: primaryColor }}>Projects</h2>
-                
-//                 {profile.projects && profile.projects.length > 0 ? (
-//                   <div className="space-y-6">
-//                     {profile.projects.map((project) => (
-//                       <div key={project._id} className="border-l-2 pl-4 space-y-3" style={{ borderColor: primaryColor }}>
-//                         <div className="flex items-start justify-between">
-//                           <div>
-//                             <h3 className="font-semibold text-lg">{project.title}</h3>
-//                             {project.year && (
-//                               <p className="text-sm text-muted-foreground">{project.year}</p>
-//                             )}
-//                           </div>
-//                           {project.externalLink && (
-//                             <Button variant="outline" size="sm" asChild>
-//                               <a href={project.externalLink} target="_blank" rel="noopener noreferrer">
-//                                 <ExternalLink className="h-4 w-4 mr-2" />
-//                                 View Project
-//                               </a>
-//                             </Button>
-//                           )}
-//                         </div>
-                        
-//                         {project.description && (
-//                           <p className="text-muted-foreground">{project.description}</p>
-//                         )}
-                        
-//                         {project.tools && project.tools.length > 0 && (
-//                           <div className="flex flex-wrap gap-2">
-//                             {project.tools.map((tool) => (
-//                               <Badge key={tool} variant="secondary" className="text-xs">
-//                                 {tool}
-//                               </Badge>
-//                             ))}
-//                           </div>
-//                         )}
-//                       </div>
-//                     ))}
-//                   </div>
-//                 ) : (
-//                   <div className="text-center py-8">
-//                     <p className="text-muted-foreground">No projects yet</p>
-//                   </div>
-//                 )}
-//               </CardContent>
-//             </Card>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
-
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { MapPin, ExternalLink, Github, Linkedin, Twitter, Globe, Clock, Heart, Settings, Mail, Phone, MessageSquare as MessageSquareIcon, Crown, ShieldCheck, MessageSquare } from 'lucide-react'
+import { 
+  MapPin, ExternalLink, Github, Linkedin, Twitter, Globe, Clock, Heart, 
+  Settings, Mail, Phone, MessageSquare, Eye, Volume2, VolumeX, ChevronDown,
+  Calendar, Play, Pause
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
+import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, CarouselDots } from '@/components/ui/carousel'
+import { LoadingScreen } from '@/components/LoadingScreen'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/hooks/use-toast'
 import { api } from '@/lib/api'
@@ -499,10 +24,40 @@ interface Project {
   externalLink?: string
 }
 
-interface ContactMethod {
-  type: string
-  value: string
-  label?: string
+interface Customization {
+  description?: string
+  location?: string
+  enterText?: string
+  avatarRadius?: number
+  profileOpacity?: number
+  profileBlur?: number
+  backgroundEffect?: string
+  usernameEffect?: string
+  avatarUrl?: string
+  bannerUrl?: string
+  accentColor?: string
+  textColor?: string
+  secondaryTextColor?: string
+  backgroundColor?: string
+  gradientEnabled?: boolean
+  borderEnabled?: boolean
+  borderColor?: string
+  borderRadius?: number
+  aboutMeEnabled?: boolean
+  aboutMeText?: string
+  showJoinDate?: boolean
+  timeFormat?: string
+  showViews?: boolean
+  parallaxEnabled?: boolean
+  parallaxIntensity?: number
+  theme?: string
+  backgrounds?: Array<{ url: string; position?: string }>
+  backgroundShuffle?: boolean
+  backgroundDuration?: number
+  audios?: Array<{ url: string; name: string }>
+  audioPlayer?: boolean
+  audioVolume?: boolean
+  forceEnterScreen?: boolean
 }
 
 interface Profile {
@@ -516,7 +71,6 @@ interface Profile {
   description?: string
   avatarUrl?: string
   bannerUrl?: string
-  profileImages?: string[]
   location?: string
   role?: string
   tools?: string[]
@@ -524,17 +78,16 @@ interface Profile {
   github?: string
   linkedin?: string
   twitter?: string
-  contactMethods?: ContactMethod[]
-  customization?: any
+  behance?: string
+  dribbble?: string
+  customization?: Customization
   approved: boolean
   likes: number
-  views: number
   isPremium: boolean
-  isStaff: boolean
-  isVerified: boolean
-  verificationBadge?: string
   projects?: Project[]
   userId: any
+  createdAt?: string
+  views?: number
 }
 
 export default function Profile() {
@@ -542,35 +95,78 @@ export default function Profile() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const { toast } = useToast()
+  
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
   const [hasLiked, setHasLiked] = useState(false)
   const [likeCount, setLikeCount] = useState(0)
   const [isOwner, setIsOwner] = useState(false)
-  const [sendingRequest, setSendingRequest] = useState(false)
-  const [chatStatus, setChatStatus] = useState<'none' | 'pending' | 'accepted'>('none')
+  const [showEnterScreen, setShowEnterScreen] = useState(false)
+  const [currentBgIndex, setCurrentBgIndex] = useState(0)
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  
+  const audioRef = useRef<HTMLAudioElement>(null)
 
   useEffect(() => {
-    if (slug) {
-      fetchProfile()
-    }
+    if (slug) fetchProfile()
   }, [slug])
 
   useEffect(() => {
     if (profile && user) {
       checkIfLiked()
       checkIfOwner()
-      checkChatStatus()
-      recordView()
     }
   }, [profile, user])
+
+  // Background slideshow
+  useEffect(() => {
+    const c = profile?.customization
+    if (!c?.backgrounds?.length || c.backgrounds.length <= 1) return
+    
+    const duration = (c.backgroundDuration || 5) * 1000
+    const interval = setInterval(() => {
+      setCurrentBgIndex(prev => 
+        c.backgroundShuffle 
+          ? Math.floor(Math.random() * c.backgrounds!.length)
+          : (prev + 1) % c.backgrounds!.length
+      )
+    }, duration)
+    
+    return () => clearInterval(interval)
+  }, [profile?.customization?.backgrounds, profile?.customization?.backgroundDuration])
+
+  // Parallax effect
+  useEffect(() => {
+    if (!profile?.customization?.parallaxEnabled) return
+    
+    const handleMouseMove = (e: MouseEvent) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 2
+      const y = (e.clientY / window.innerHeight - 0.5) * 2
+      setMousePosition({ x, y })
+    }
+    
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [profile?.customization?.parallaxEnabled])
 
   const fetchProfile = async () => {
     try {
       const response = await api.get(`/profiles/slug/${slug}`)
       setProfile(response.data)
       setLikeCount(response.data.likes || 0)
+      
+      // Check for enter screen
+      if (response.data.customization?.forceEnterScreen) {
+        setShowEnterScreen(true)
+      }
+      
+      // Track view
+      api.post('/analytics', {
+        profileId: response.data._id,
+        eventType: 'profile_view'
+      }).catch(() => {})
     } catch (error: any) {
       if (error.response?.status === 404) {
         setNotFound(true)
@@ -595,46 +191,12 @@ export default function Profile() {
     setIsOwner(profile.userId._id === user.id || profile.userId === user.id)
   }
 
-  const checkChatStatus = async () => {
-    if (!user || !profile || isOwner) return
-    
-    try {
-      // Check if chat already exists or request is pending
-      const response = await api.get('/chat')
-      const existingChat = response.data.find((chat: any) => 
-        chat.otherProfile?._id === profile._id || 
-        chat.participants.some((p: any) => p.toString() === profile.userId._id || p.toString() === profile.userId)
-      )
-      
-      if (existingChat) {
-        setChatStatus('accepted')
-      }
-    } catch (error) {
-      console.error('Failed to check chat status:', error)
-    }
-  }
-
-  const recordView = async () => {
-    if (!user || !profile || isOwner) return
-    
-    try {
-      await api.post('/views', { profileId: profile._id })
-    } catch (error) {
-      // Silent fail
-    }
-  }
-
   const handleLike = async () => {
     if (!user) {
-      toast({
-        title: "Sign in required",
-        description: "Please sign in to like profiles",
-        variant: "destructive"
-      })
+      toast({ title: "Sign in required", description: "Please sign in to like profiles", variant: "destructive" })
       navigate('/auth')
       return
     }
-
     if (!profile) return
 
     try {
@@ -642,100 +204,43 @@ export default function Profile() {
         await api.delete(`/likes/${profile._id}`)
         setHasLiked(false)
         setLikeCount(prev => prev - 1)
-        toast({
-          title: "Unliked",
-          description: "Removed from your liked profiles"
-        })
       } else {
         await api.post('/likes', { profileId: profile._id })
         setHasLiked(true)
         setLikeCount(prev => prev + 1)
-        toast({
-          title: "Liked!",
-          description: "Added to your liked profiles"
-        })
       }
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.response?.data?.error || "Failed to update like",
-        variant: "destructive"
-      })
+      toast({ title: "Error", description: error.response?.data?.error || "Failed to update like", variant: "destructive" })
     }
   }
 
-  const handleSendChatRequest = async () => {
-    if (!user) {
-      toast({
-        title: "Sign in required",
-        description: "Please sign in to send chat requests",
-        variant: "destructive"
-      })
-      navigate('/auth')
-      return
-    }
-
-    if (!profile) return
-
-    setSendingRequest(true)
-    try {
-      await api.post('/chat/request', { receiverId: profile.userId._id || profile.userId })
-      setChatStatus('pending')
-      toast({
-        title: "Chat request sent!",
-        description: "You'll be notified when they accept"
-      })
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.response?.data?.error || "Failed to send chat request",
-        variant: "destructive"
-      })
-    } finally {
-      setSendingRequest(false)
-    }
-  }
-
-  const getContactIcon = (type: string) => {
-    switch (type) {
-      case 'email': return <Mail className="h-4 w-4" />
-      case 'phone': return <Phone className="h-4 w-4" />
-      case 'discord': return <MessageSquareIcon className="h-4 w-4" />
-      case 'telegram': return <MessageSquareIcon className="h-4 w-4" />
-      default: return <ExternalLink className="h-4 w-4" />
+  const toggleAudio = () => {
+    if (audioRef.current) {
+      if (isAudioPlaying) {
+        audioRef.current.pause()
+      } else {
+        audioRef.current.play()
+      }
+      setIsAudioPlaying(!isAudioPlaying)
     }
   }
 
   const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map(n => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2)
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
   }
 
   if (loading) {
-    return (
-      <div className="min-h-screen pt-24 px-4 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin h-12 w-12 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading profile...</p>
-        </div>
-      </div>
-    )
+    return <LoadingScreen message="Loading profile..." />
   }
 
   if (notFound) {
     return (
-      <div className="min-h-screen pt-24 px-4 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center px-4">
         <div className="text-center">
           <h1 className="text-4xl font-bold mb-4">Profile Not Found</h1>
-          <p className="text-muted-foreground mb-8">
-            The profile you're looking for doesn't exist or has been removed.
-          </p>
+          <p className="text-muted-foreground mb-8">The profile you're looking for doesn't exist.</p>
           <Button variant="glow" asChild>
-            <Link to="/discover">Discover Other Creators</Link>
+            <Link to="/discover">Discover Creators</Link>
           </Button>
         </div>
       </div>
@@ -744,301 +249,347 @@ export default function Profile() {
 
   if (!profile) return null
 
-  const positioning = profile.customization?.positioning || 'center'
-  const primaryColor = profile.customization?.primaryColor || '#3B82F6'
+  const c = profile.customization || {}
+  const accentColor = c.accentColor || '#3B82F6'
+  const textColor = c.textColor || '#FFFFFF'
+  const secondaryTextColor = c.secondaryTextColor || '#A0A0A0'
+  const backgroundColor = c.backgroundColor || '#0a0a0f'
+  const avatarRadius = c.avatarRadius ?? 50
+  const profileOpacity = (c.profileOpacity ?? 100) / 100
+  const profileBlur = c.profileBlur || 0
+  const borderRadius = c.borderRadius || 16
+  const parallaxIntensity = (c.parallaxIntensity ?? 50) / 100
+
+  const currentBg = c.backgrounds?.[currentBgIndex]?.url || profile.bannerUrl
+
+  // Enter Screen
+  if (showEnterScreen) {
+    return (
+      <div 
+        className="fixed inset-0 z-50 flex flex-col items-center justify-center cursor-pointer"
+        style={{ backgroundColor }}
+        onClick={() => setShowEnterScreen(false)}
+      >
+        {currentBg && (
+          <div 
+            className="absolute inset-0 bg-cover bg-center opacity-30"
+            style={{ backgroundImage: `url(${currentBg})` }}
+          />
+        )}
+        <div className="relative z-10 text-center animate-fade-up">
+          {(c.avatarUrl || profile.avatarUrl) && (
+            <img
+              src={c.avatarUrl || profile.avatarUrl}
+              alt={profile.displayName || profile.name}
+              className="w-32 h-32 mx-auto mb-6 object-cover border-4 glow-blue"
+              style={{ 
+                borderRadius: `${avatarRadius}%`,
+                borderColor: accentColor
+              }}
+            />
+          )}
+          <h1 className="text-4xl font-bold mb-4" style={{ color: textColor }}>
+            {profile.displayName || profile.name}
+          </h1>
+          <p className="text-lg animate-pulse" style={{ color: secondaryTextColor }}>
+            {c.enterText || 'Click to enter'}
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="min-h-screen pt-24 px-4">
-      {/* Banner */}
-      {profile.bannerUrl && (
-        <div className="w-full h-64 mb-8">
-          <img
-            src={profile.bannerUrl}
-            alt="Profile banner"
-            className="w-full h-full object-cover rounded-lg"
-          />
-        </div>
+    <div 
+      className="min-h-screen"
+      style={{ 
+        backgroundColor,
+        color: textColor,
+        '--accent-color': accentColor,
+      } as React.CSSProperties}
+    >
+      {/* Background */}
+      {currentBg && (
+        <div 
+          className="fixed inset-0 z-0 transition-all duration-1000"
+          style={{
+            backgroundImage: `url(${currentBg})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            transform: c.parallaxEnabled 
+              ? `translate(${mousePosition.x * parallaxIntensity * 20}px, ${mousePosition.y * parallaxIntensity * 20}px) scale(1.1)`
+              : undefined,
+            filter: profileBlur > 0 ? `blur(${profileBlur}px)` : undefined,
+            opacity: profileOpacity * 0.5,
+          }}
+        />
+      )}
+      
+      {/* Overlay */}
+      <div className="fixed inset-0 z-0 bg-gradient-to-b from-transparent via-background/50 to-background" />
+
+      {/* Audio Player */}
+      {c.audios && c.audios.length > 0 && (
+        <>
+          <audio ref={audioRef} src={c.audios[0].url} loop />
+          {c.audioPlayer && (
+            <button
+              onClick={toggleAudio}
+              className="fixed top-6 left-6 z-50 p-3 rounded-full glass hover:bg-accent/20 transition-colors"
+              style={{ borderColor: accentColor }}
+            >
+              {isAudioPlaying ? (
+                <Volume2 className="h-5 w-5" style={{ color: accentColor }} />
+              ) : (
+                <VolumeX className="h-5 w-5" style={{ color: secondaryTextColor }} />
+              )}
+            </button>
+          )}
+        </>
       )}
 
-      <div className="container mx-auto py-8 max-w-6xl">
-        <div className={`grid lg:grid-cols-${positioning === 'center' ? '3' : '4'} gap-8`}>
-          {/* Left Sidebar */}
-          <div className={`lg:col-span-1 ${positioning === 'right' ? 'lg:order-2' : ''}`}>
-            <Card className="sticky top-32">
-              <CardContent className="p-6 text-center space-y-6">
-                <div className="relative mx-auto w-24 h-24">
-                  {profile.avatarUrl ? (
-                    <img
-                      src={profile.avatarUrl}
-                      alt={profile.displayName || profile.name}
-                      className="w-full h-full rounded-full object-cover border-2 border-primary-glow shadow-glow"
-                      style={{ borderColor: primaryColor }}
-                    />
-                  ) : (
-                    <div 
-                      className="w-full h-full rounded-full border-2 shadow-glow flex items-center justify-center text-primary-foreground font-bold text-xl"
+      {/* Content */}
+      <div className="relative z-10 pt-24 px-4 pb-20">
+        <div className="container mx-auto max-w-6xl">
+          {/* Hero Section */}
+          <div className="text-center mb-12 animate-fade-up">
+            {/* Avatar */}
+            <div className="relative inline-block mb-6">
+              {(c.avatarUrl || profile.avatarUrl) ? (
+                <img
+                  src={c.avatarUrl || profile.avatarUrl}
+                  alt={profile.displayName || profile.name}
+                  className="w-32 h-32 object-cover border-4 profile-glow-ring"
+                  style={{ 
+                    borderRadius: `${avatarRadius}%`,
+                    borderColor: accentColor,
+                  }}
+                />
+              ) : (
+                <div 
+                  className="w-32 h-32 flex items-center justify-center text-3xl font-bold profile-glow-ring"
+                  style={{ 
+                    borderRadius: `${avatarRadius}%`,
+                    background: `linear-gradient(135deg, ${accentColor}, ${accentColor}88)`,
+                    color: textColor,
+                  }}
+                >
+                  {getInitials(profile.displayName || profile.name)}
+                </div>
+              )}
+              {profile.isPremium && (
+                <Badge className="absolute -bottom-2 left-1/2 -translate-x-1/2 premium-badge">
+                  Premium
+                </Badge>
+              )}
+            </div>
+
+            {/* Name */}
+            <h1 
+              className={`text-4xl md:text-5xl font-bold mb-2 ${
+                c.usernameEffect === 'glow' ? 'animate-glow-pulse' : ''
+              }`}
+              style={{ color: textColor }}
+            >
+              {profile.displayName || profile.name}
+            </h1>
+            
+            <p className="text-lg mb-2" style={{ color: secondaryTextColor }}>
+              @{profile.username || profile.slug}
+            </p>
+            
+            {profile.headline && (
+              <p className="text-lg mb-4" style={{ color: secondaryTextColor }}>
+                {profile.headline}
+              </p>
+            )}
+
+            {/* Stats */}
+            <div className="flex items-center justify-center gap-6 mb-6 text-sm" style={{ color: secondaryTextColor }}>
+              {c.showViews !== false && profile.views !== undefined && (
+                <span className="flex items-center gap-1">
+                  <Eye className="h-4 w-4" /> {profile.views.toLocaleString()}
+                </span>
+              )}
+              {(c.location || profile.location) && (
+                <span className="flex items-center gap-1">
+                  <MapPin className="h-4 w-4" /> {c.location || profile.location}
+                </span>
+              )}
+              {c.showJoinDate !== false && profile.createdAt && (
+                <span className="flex items-center gap-1">
+                  <Calendar className="h-4 w-4" /> {new Date(profile.createdAt).toLocaleDateString()}
+                </span>
+              )}
+            </div>
+
+            {/* Social Links */}
+            <div className="flex items-center justify-center gap-3 mb-8">
+              {profile.github && (
+                <a href={`https://github.com/${profile.github}`} target="_blank" rel="noopener noreferrer" className="p-3 rounded-full glass hover:bg-accent/20 transition-colors">
+                  <Github className="h-5 w-5" />
+                </a>
+              )}
+              {profile.twitter && (
+                <a href={`https://twitter.com/${profile.twitter}`} target="_blank" rel="noopener noreferrer" className="p-3 rounded-full glass hover:bg-accent/20 transition-colors">
+                  <Twitter className="h-5 w-5" />
+                </a>
+              )}
+              {profile.linkedin && (
+                <a href={`https://linkedin.com/in/${profile.linkedin}`} target="_blank" rel="noopener noreferrer" className="p-3 rounded-full glass hover:bg-accent/20 transition-colors">
+                  <Linkedin className="h-5 w-5" />
+                </a>
+              )}
+              {profile.website && (
+                <a href={profile.website} target="_blank" rel="noopener noreferrer" className="p-3 rounded-full glass hover:bg-accent/20 transition-colors">
+                  <Globe className="h-5 w-5" />
+                </a>
+              )}
+              <a href={`mailto:${profile.slug}@starlit.app`} className="p-3 rounded-full glass hover:bg-accent/20 transition-colors">
+                <Mail className="h-5 w-5" />
+              </a>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center justify-center gap-4">
+              <Button
+                variant={hasLiked ? 'glow' : 'outline'}
+                onClick={handleLike}
+                disabled={isOwner}
+                className="gap-2"
+              >
+                <Heart className={`h-4 w-4 ${hasLiked ? 'fill-current' : ''}`} />
+                {likeCount}
+              </Button>
+              {isOwner && (
+                <Button variant="outline" asChild>
+                  <Link to="/customization">
+                    <Settings className="h-4 w-4 mr-2" />
+                    Customize
+                  </Link>
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {/* Scroll indicator */}
+          <div className="flex justify-center mb-12 animate-bounce">
+            <ChevronDown className="h-6 w-6" style={{ color: secondaryTextColor }} />
+          </div>
+
+          {/* About Me */}
+          {c.aboutMeEnabled !== false && (c.aboutMeText || c.description || profile.bio || profile.description) && (
+            <Card 
+              className="mb-8 glass animate-fade-up"
+              style={{ borderRadius: `${borderRadius}px` }}
+            >
+              <CardContent className="p-8">
+                <h2 className="text-2xl font-bold mb-4" style={{ color: accentColor }}>About Me</h2>
+                <p className="leading-relaxed whitespace-pre-wrap" style={{ color: textColor }}>
+                  {c.aboutMeText || c.description || profile.bio || profile.description}
+                </p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Tools & Skills */}
+          {profile.tools && profile.tools.length > 0 && (
+            <Card 
+              className="mb-8 glass animate-fade-up"
+              style={{ borderRadius: `${borderRadius}px`, animationDelay: '0.1s' }}
+            >
+              <CardContent className="p-8">
+                <h2 className="text-2xl font-bold mb-4" style={{ color: accentColor }}>Skills & Tools</h2>
+                <div className="flex flex-wrap gap-2">
+                  {profile.tools.map((tool) => (
+                    <Badge 
+                      key={tool} 
+                      variant="secondary"
+                      className="px-3 py-1"
                       style={{ 
-                        background: `linear-gradient(to bottom right, ${primaryColor}, ${profile.customization?.secondaryColor || '#8B5CF6'})`,
-                        borderColor: primaryColor
+                        backgroundColor: `${accentColor}20`,
+                        color: textColor,
+                        borderColor: accentColor,
                       }}
                     >
-                      {getInitials(profile.displayName || profile.name)}
-                    </div>
-                  )}
-                  {profile.isPremium && (
-                    <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
-                      <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white">
-                        <Crown className="h-3 w-3 mr-1" />
-                        Premium
-                      </Badge>
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <div className="flex items-center justify-center space-x-2 mb-2">
-                    <h1 className="text-2xl font-bold" style={{ color: primaryColor }}>
-                      {profile.displayName || profile.name}
-                    </h1>
-                    {profile.isStaff && (
-                      <ShieldCheck className="h-5 w-5 text-yellow-500" />
-                    )}
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-1">@{profile.username}</p>
-                  {profile.headline && (
-                    <p className="text-muted-foreground">{profile.headline}</p>
-                  )}
-                  {profile.role && (
-                    <Badge variant="outline" className="mt-2">{profile.role}</Badge>
-                  )}
-                </div>
-
-                {/* Action Buttons */}
-                <div className="space-y-2">
-                  <Button
-                    variant={hasLiked ? "glow" : "outline"}
-                    size="sm"
-                    onClick={handleLike}
-                    className="w-full"
-                    disabled={isOwner}
-                  >
-                    <Heart className={`h-4 w-4 mr-2 ${hasLiked ? 'fill-current' : ''}`} />
-                    {hasLiked ? 'Liked' : 'Like'} ({likeCount})
-                  </Button>
-
-                  {!isOwner && chatStatus === 'none' && (
-                    <Button
-                      variant="glow"
-                      size="sm"
-                      onClick={handleSendChatRequest}
-                      className="w-full"
-                      disabled={sendingRequest}
-                    >
-                      <MessageSquare className="h-4 w-4 mr-2" />
-                      {sendingRequest ? 'Sending...' : 'Send Message'}
-                    </Button>
-                  )}
-
-                  {chatStatus === 'pending' && (
-                    <Button variant="outline" size="sm" className="w-full" disabled>
-                      <Clock className="h-4 w-4 mr-2" />
-                      Request Pending
-                    </Button>
-                  )}
-
-                  {chatStatus === 'accepted' && (
-                    <Button variant="glow" size="sm" asChild className="w-full">
-                      <Link to="/messages">
-                        <MessageSquare className="h-4 w-4 mr-2" />
-                        Open Chat
-                      </Link>
-                    </Button>
-                  )}
-
-                  {isOwner && (
-                    <Button variant="outline" size="sm" asChild className="w-full">
-                      <Link to={`/profile/${profile.slug}/customize`}>
-                        <Settings className="h-4 w-4 mr-2" />
-                        Customize Profile
-                      </Link>
-                    </Button>
-                  )}
-                </div>
-
-                {profile.location && (
-                  <div className="flex items-center justify-center text-muted-foreground">
-                    <MapPin className="h-4 w-4 mr-2" />
-                    {profile.location}
-                  </div>
-                )}
-
-                {profile.tools && profile.tools.length > 0 && (
-                  <div>
-                    <h3 className="text-sm font-semibold mb-3 text-left">Tools & Skills</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {profile.tools.map((tool) => (
-                        <Badge key={tool} variant="secondary" className="text-xs">
-                          {tool}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Contact Methods */}
-                {profile.contactMethods && profile.contactMethods.length > 0 && (
-                  <div className="space-y-2">
-                    <h3 className="text-sm font-semibold text-left">Contact</h3>
-                    {profile.contactMethods.map((contact, idx) => (
-                      <div key={idx} className="text-left p-2 border border-border rounded-lg">
-                        <div className="flex items-center space-x-2 text-sm">
-                          {getContactIcon(contact.type)}
-                          <div>
-                            <p className="font-medium">{contact.label || contact.type}</p>
-                            <p className="text-xs text-muted-foreground">{contact.value}</p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* Social Links */}
-                <div className="space-y-3">
-                  {profile.website && (
-                    <Button variant="outline" size="sm" asChild className="w-full">
-                      <a href={profile.website} target="_blank" rel="noopener noreferrer">
-                        <Globe className="h-4 w-4 mr-2" />
-                        Website
-                      </a>
-                    </Button>
-                  )}
-                  {profile.github && (
-                    <Button variant="outline" size="sm" asChild className="w-full">
-                      <a href={`https://github.com/${profile.github}`} target="_blank" rel="noopener noreferrer">
-                        <Github className="h-4 w-4 mr-2" />
-                        GitHub
-                      </a>
-                    </Button>
-                  )}
-                  {profile.linkedin && (
-                    <Button variant="outline" size="sm" asChild className="w-full">
-                      <a href={`https://linkedin.com/in/${profile.linkedin}`} target="_blank" rel="noopener noreferrer">
-                        <Linkedin className="h-4 w-4 mr-2" />
-                        LinkedIn
-                      </a>
-                    </Button>
-                  )}
-                  {profile.twitter && (
-                    <Button variant="outline" size="sm" asChild className="w-full">
-                      <a href={`https://twitter.com/${profile.twitter}`} target="_blank" rel="noopener noreferrer">
-                        <Twitter className="h-4 w-4 mr-2" />
-                        Twitter
-                      </a>
-                    </Button>
-                  )}
+                      {tool}
+                    </Badge>
+                  ))}
                 </div>
               </CardContent>
             </Card>
-          </div>
+          )}
 
-          {/* Right Content */}
-          <div className={`lg:col-span-2 space-y-8 ${positioning === 'right' ? 'lg:order-1' : ''}`}>
-            {!profile.approved && (
-              <Card className="border-secondary-glow bg-secondary/10">
-                <CardContent className="p-4 flex items-center space-x-3">
-                  <Clock className="h-5 w-5 text-secondary-glow" />
-                  <div>
-                    <p className="font-medium">Profile Pending Review</p>
-                    <p className="text-sm text-muted-foreground">
-                      Your profile is pending admin approval and will be visible in Discover once reviewed.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* About/Description Section */}
-            {(profile.bio || profile.description) && (
-              <Card>
-                <CardContent className="p-6">
-                  <h2 className="text-xl font-semibold mb-4" style={{ color: primaryColor }}>About</h2>
-                  <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                    {profile.description || profile.bio}
-                  </p>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Gallery Images */}
-            {profile.profileImages && profile.profileImages.length > 0 && (
-              <Card>
-                <CardContent className="p-6">
-                  <h2 className="text-xl font-semibold mb-4" style={{ color: primaryColor }}>Gallery</h2>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {profile.profileImages.map((img, idx) => (
-                      <img
-                        key={idx}
-                        src={img}
-                        alt={`Gallery ${idx + 1}`}
-                        className="w-full h-48 object-cover rounded-lg border border-border hover:scale-105 transition-transform cursor-pointer"
-                      />
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Projects Section */}
-            <Card>
-              <CardContent className="p-6">
-                <h2 className="text-xl font-semibold mb-4" style={{ color: primaryColor }}>Projects</h2>
-                
-                {profile.projects && profile.projects.length > 0 ? (
-                  <div className="space-y-6">
-                    {profile.projects.map((project) => (
-                      <div key={project._id} className="border-l-2 pl-4 space-y-3" style={{ borderColor: primaryColor }}>
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <h3 className="font-semibold text-lg">{project.title}</h3>
-                            {project.year && (
-                              <p className="text-sm text-muted-foreground">{project.year}</p>
-                            )}
-                          </div>
-                          {project.externalLink && (
-                            <Button variant="outline" size="sm" asChild>
-                              <a href={project.externalLink} target="_blank" rel="noopener noreferrer">
-                                <ExternalLink className="h-4 w-4 mr-2" />
-                                View Project
-                              </a>
-                            </Button>
-                          )}
-                        </div>
-                        
-                        {project.description && (
-                          <p className="text-muted-foreground">{project.description}</p>
-                        )}
-                        
+          {/* Featured Projects */}
+          {profile.projects && profile.projects.length > 0 && (
+            <Card 
+              className="mb-8 glass animate-fade-up"
+              style={{ borderRadius: `${borderRadius}px`, animationDelay: '0.2s' }}
+            >
+              <CardContent className="p-8">
+                <h2 className="text-2xl font-bold mb-6" style={{ color: accentColor }}>Featured Projects</h2>
+                <div className="grid md:grid-cols-2 gap-6">
+                  {profile.projects.map((project) => (
+                    <div 
+                      key={project._id}
+                      className="glass rounded-xl overflow-hidden hover-lift card-interactive"
+                    >
+                      {/* Project Image Carousel */}
+                      {project.images && project.images.length > 0 && (
+                        <Carousel>
+                          <CarouselContent>
+                            {project.images.map((img, idx) => (
+                              <CarouselItem key={idx}>
+                                <img
+                                  src={img}
+                                  alt={`${project.title} ${idx + 1}`}
+                                  className="w-full h-48 object-cover"
+                                />
+                              </CarouselItem>
+                            ))}
+                          </CarouselContent>
+                          <CarouselPrevious />
+                          <CarouselNext />
+                        </Carousel>
+                      )}
+                      
+                      <div className="p-6">
+                        {/* Project Tools */}
                         {project.tools && project.tools.length > 0 && (
-                          <div className="flex flex-wrap gap-2">
+                          <div className="flex flex-wrap gap-2 mb-3">
                             {project.tools.map((tool) => (
-                              <Badge key={tool} variant="secondary" className="text-xs">
+                              <Badge key={tool} variant="outline" className="text-xs">
                                 {tool}
                               </Badge>
                             ))}
                           </div>
                         )}
+                        
+                        <h3 className="text-xl font-semibold mb-2" style={{ color: textColor }}>
+                          {project.title}
+                        </h3>
+                        
+                        {project.description && (
+                          <p className="text-sm mb-4 line-clamp-2" style={{ color: secondaryTextColor }}>
+                            {project.description}
+                          </p>
+                        )}
+                        
+                        {project.externalLink && (
+                          <Button variant="outline" size="sm" asChild>
+                            <a href={project.externalLink} target="_blank" rel="noopener noreferrer">
+                              <ExternalLink className="h-4 w-4 mr-2" />
+                              View Project
+                            </a>
+                          </Button>
+                        )}
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <p className="text-muted-foreground">No projects yet</p>
-                  </div>
-                )}
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
-          </div>
+          )}
         </div>
       </div>
     </div>
