@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
-import { X, Menu } from 'lucide-react'
+import { X, Menu, ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface SidebarContextValue {
   open: boolean
@@ -23,7 +23,7 @@ interface SidebarProviderProps {
   defaultOpen?: boolean
 }
 
-export function SidebarProvider({ children, defaultOpen = true }: SidebarProviderProps) {
+export function SidebarProvider({ children, defaultOpen = false }: SidebarProviderProps) {
   const [open, setOpen] = React.useState(defaultOpen)
   const collapsed = !open
 
@@ -39,32 +39,34 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function Sidebar({ children, className, ...props }: SidebarProps) {
-  const { open } = useSidebar()
+  const { open, setOpen } = useSidebar()
 
   return (
     <>
-      {/* Mobile overlay */}
+      {/* Mobile overlay - click to close */}
       {open && (
         <div 
-          className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm lg:hidden"
-          onClick={() => {}}
+          className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm"
+          onClick={() => setOpen(false)}
         />
       )}
       
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed left-0 top-0 z-50 h-screen bg-card border-r border-border transition-all duration-300 flex flex-col',
-          open ? 'w-64' : 'w-0 lg:w-16',
-          'lg:relative',
+          'fixed left-0 top-0 z-50 h-screen bg-card border-r border-border/50 transition-all duration-300 flex flex-col',
+          open ? 'w-64' : 'w-16',
           className
         )}
         {...props}
       >
-        <div className={cn('flex flex-col h-full overflow-hidden', !open && 'lg:items-center')}>
+        <div className={cn('flex flex-col h-full overflow-hidden', !open && 'items-center')}>
           {children}
         </div>
       </aside>
+
+      {/* Spacer to push content */}
+      <div className={cn('shrink-0 transition-all duration-300', open ? 'w-64' : 'w-16')} />
     </>
   )
 }
@@ -75,8 +77,8 @@ export function SidebarHeader({ children, className, ...props }: React.HTMLAttri
   return (
     <div 
       className={cn(
-        'flex items-center p-4 border-b border-border',
-        !open && 'lg:justify-center lg:p-2',
+        'flex items-center p-4 border-b border-border/50',
+        !open && 'justify-center p-3',
         className
       )} 
       {...props}
@@ -96,13 +98,13 @@ export function SidebarContent({ children, className, ...props }: React.HTMLAttr
 
 export function SidebarFooter({ children, className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn('p-4 border-t border-border', className)} {...props}>
+    <div className={cn('p-4 border-t border-border/50', className)} {...props}>
       {children}
     </div>
   )
 }
 
-export function SidebarTrigger({ className, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+export function SidebarTrigger({ className, showArrow = false, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement> & { showArrow?: boolean }) {
   const { open, setOpen } = useSidebar()
 
   return (
@@ -114,7 +116,11 @@ export function SidebarTrigger({ className, ...props }: React.ButtonHTMLAttribut
       )}
       {...props}
     >
-      {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+      {showArrow ? (
+        open ? <ChevronLeft className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />
+      ) : (
+        open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />
+      )}
     </button>
   )
 }

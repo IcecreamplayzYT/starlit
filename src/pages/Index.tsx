@@ -55,13 +55,18 @@ function SidebarNav() {
   return (
     <Sidebar className="border-r border-border/50">
       <SidebarHeader>
-        <Link to="/" className="flex items-center gap-3">
+        {/* Logo - click to toggle sidebar */}
+        <button 
+          onClick={() => setOpen(!open)} 
+          className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+        >
           <img src="/star.png" alt="Starlit" className="h-8 w-8" />
           {!collapsed && <span className="text-xl font-bold text-gradient">starlit</span>}
-        </Link>
+        </button>
+        {/* Arrow toggle */}
         <button
           onClick={() => setOpen(!open)}
-          className="ml-auto p-1.5 rounded-lg hover:bg-accent/10 transition-colors lg:flex hidden"
+          className="ml-auto p-1.5 rounded-lg hover:bg-accent/10 transition-colors"
         >
           {open ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
         </button>
@@ -69,7 +74,7 @@ function SidebarNav() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          {!collapsed && <SidebarGroupLabel>Navigation</SidebarGroupLabel>}
           <SidebarMenu>
             {mainNav.map((item) => (
               <SidebarMenuItem key={item.href}>
@@ -85,7 +90,7 @@ function SidebarNav() {
         </SidebarGroup>
 
         <SidebarGroup className="mt-6">
-          <SidebarGroupLabel>Resources</SidebarGroupLabel>
+          {!collapsed && <SidebarGroupLabel>Resources</SidebarGroupLabel>}
           <SidebarMenu>
             {resourceNav.map((item) => (
               <SidebarMenuItem key={item.href}>
@@ -111,9 +116,15 @@ function SidebarNav() {
           </Link>
         ) : (
           <Link to="/auth" className="w-full">
-            <Button variant="glow" size="sm" className="w-full">
-              {collapsed ? <Zap className="h-4 w-4" /> : 'Get Started'}
-            </Button>
+            {collapsed ? (
+              <SidebarMenuButton>
+                <Zap className="h-4 w-4 shrink-0" />
+              </SidebarMenuButton>
+            ) : (
+              <Button variant="glow" size="sm" className="w-full">
+                Get Started
+              </Button>
+            )}
           </Link>
         )}
       </SidebarFooter>
@@ -269,7 +280,7 @@ function HomeContent() {
 
 export default function Index() {
   return (
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider defaultOpen={false}>
       <div className="flex min-h-screen w-full">
         <SidebarNav />
         <HomeContent />
