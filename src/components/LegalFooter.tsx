@@ -17,7 +17,7 @@ const LegalFooter = () => {
               className="text-sm"
               style={{ color: 'hsl(215, 20%, 65%)' }}
             >
-              © {new Date().getFullYear()} Starlit. All rights reserved.
+              © {new Date().getFullYear()} Starlit - Lighting Your Way. All rights reserved.
             </span>
           </div>
           

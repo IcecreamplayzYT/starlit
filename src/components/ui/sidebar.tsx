@@ -182,16 +182,26 @@ export function SidebarMenuButton({
   
   const Comp = asChild ? 'div' : 'button'
   
+  const divProps = asChild ? { className: cn(
+    'flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+    'hover:bg-accent/10 hover:text-accent',
+    isActive && 'bg-accent/15 text-accent',
+    !open && 'lg:justify-center lg:px-2',
+    className
+  ) } : undefined
+  
   return (
     <Comp
-      className={cn(
-        'flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-        'hover:bg-accent/10 hover:text-accent',
-        isActive && 'bg-accent/15 text-accent',
-        !open && 'lg:justify-center lg:px-2',
-        className
-      )}
-      {...(asChild ? {} : props)}
+      {...(asChild ? divProps : {
+        className: cn(
+          'flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+          'hover:bg-accent/10 hover:text-accent',
+          isActive && 'bg-accent/15 text-accent',
+          !open && 'lg:justify-center lg:px-2',
+          className
+        ),
+        ...props
+      })}
     >
       {children}
     </Comp>

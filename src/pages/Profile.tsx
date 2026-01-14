@@ -1,10 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { 
-  MapPin, ExternalLink, Github, Linkedin, Twitter, Globe, Heart, 
-  Settings, Mail, Eye, Volume2, VolumeX, ChevronDown,
-  Calendar, MessageCircle, ThumbsUp, ThumbsDown
-} from 'lucide-react'
+import { MapPin, ExternalLink, Github, Linkedin, Twitter, Globe, Heart, Settings, Mail, Eye, Volume2, VolumeX, ChevronDown, Calendar, MessageCircle, ThumbsUp, ThumbsDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
@@ -415,7 +411,7 @@ export default function Profile() {
             )}
             {profile.isPremium && (
               <Badge className="absolute -bottom-2 left-1/2 -translate-x-1/2 premium-badge text-xs px-2">
-                ✦ Premium
+                Premium
               </Badge>
             )}
           </div>
@@ -581,8 +577,8 @@ export default function Profile() {
               <Card 
                 className="backdrop-blur-xl border animate-fade-up"
                 style={{ 
-                  backgroundColor: 'rgba(255,255,255,0.05)',
-                  borderColor: 'rgba(255,255,255,0.1)',
+                  backgroundColor: 'rgba(128, 128, 128, 0.02)',
+                  borderColor: 'rgba(255, 255, 255, 0.1)',
                   borderRadius: `${borderRadius}px`,
                 }}
               >
@@ -662,10 +658,10 @@ export default function Profile() {
                 }}
               >
                 <CardContent className="p-0">
-                  {/* Scrolling tools banner */}
-                  <div className="py-4 overflow-hidden">
-                    <div className="flex gap-4 animate-marquee">
-                      {[...profile.tools, ...profile.tools].map((tool, idx) => (
+                  {/* Scrolling tools banner - only scrolls when needed */}
+                  <div className="py-4 h-16 flex items-center overflow-x-auto overflow-y-hidden" style={{ backgroundColor: 'rgba(128,128,128,0.2)' }}>
+                    <div className="flex gap-4 px-4">
+                      {profile.tools.map((tool, idx) => (
                         <Badge 
                           key={idx}
                           className="px-4 py-2 text-sm whitespace-nowrap"

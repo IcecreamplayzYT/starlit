@@ -4,6 +4,7 @@ import { api } from '@/lib/api'
 interface User {
   id: string
   email: string
+  slug?: string
   user_metadata?: {
     name?: string
   }

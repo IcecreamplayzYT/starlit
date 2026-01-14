@@ -7,7 +7,7 @@ const PrivacyNew = () => {
       title="Privacy Policy"
       subtitle="Learn how we collect, use, and protect your data"
       breadcrumb="Privacy"
-      lastUpdated="October 11, 2025"
+      lastUpdated="January 14th, 2026"
     >
       <div 
         className="rounded-xl p-8 border"

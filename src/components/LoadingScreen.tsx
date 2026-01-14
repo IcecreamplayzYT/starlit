@@ -16,8 +16,6 @@ export function LoadingScreen({ message = 'Loading' }: LoadingScreenProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background">
-      {/* Subtle background gradient */}
-      <div className="absolute inset-0 bg-gradient-hero opacity-50" />
       
       {/* Logo */}
       <div className="relative mb-10">
@@ -31,9 +29,6 @@ export function LoadingScreen({ message = 'Loading' }: LoadingScreenProps) {
           }}
         />
       </div>
-      
-      {/* Brand name */}
-      <h1 className="text-2xl font-bold text-gradient mb-8">starlit</h1>
       
       {/* 3-dot loader */}
       <div className="flex items-center space-x-4">
@@ -60,7 +55,7 @@ export function LoadingScreen({ message = 'Loading' }: LoadingScreenProps) {
       {/* Optional message */}
       {message && (
         <p className="mt-8 text-sm text-muted-foreground">
-          {message}
+          Starlit- Lighting Your Way
         </p>
       )}
     </div>

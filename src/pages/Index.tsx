@@ -1,50 +1,45 @@
-import { Link, useLocation } from 'react-router-dom'
-import {
-  ArrowRight,
-  Sparkles,
-  Search,
-  Eye,
-  Crown,
-  Home,
-  Compass,
-  FileText,
-  Settings,
-  ChevronLeft,
-  Shield,
-  Palette,
-  Menu,
-} from 'lucide-react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { ArrowRight, Sparkles, Search, Eye, Crown, Home, ExternalLink, Compass, FileText, Settings, MessageCircle, MailWarning, ChevronLeft, Shield, Palette, Menu, LogOut } from 'lucide-react'
+import { faDiscord } from '@fortawesome/free-brands-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/useAuth'
-import {
-  Sidebar,
-  SidebarProvider,
-  SidebarHeader,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  useSidebar,
-} from '@/components/ui/sidebar'
+import { Sidebar, SidebarProvider, SidebarHeader, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton, useSidebar } from '@/components/ui/sidebar'
+import { useEffect, useState, useRef } from 'react'
+import { api } from '@/lib/api'
+
 
 function SidebarNav() {
   const location = useLocation()
-  const { user } = useAuth()
+  const [userSlug, setUserSlug] = useState<string | null>(null)
+  const { user, logout } = useAuth()
   const { open, setOpen } = useSidebar()
+  const navigate = useNavigate()
+  const handleLogout = () => {
+    logout()
+    setOpen(false)
+    navigate('/')
+  }
 
   const mainNav = [
     { title: 'Home', icon: Home, href: '/' },
     { title: 'Discover', icon: Compass, href: '/discover' },
     { title: 'Premium', icon: Crown, href: '/premium' },
+    { title: 'Profile Customization', icon: Settings, href: '/customization'},
+    { title: 'Messages', icon: MessageCircle, href: '/messages' },
+    { title: 'Chat Requests', icon: MailWarning, href: '/chat-requests'},
   ]
-
   const resourceNav = [
     { title: 'Documentation', icon: FileText, href: '/docs' },
     { title: 'Terms', icon: Shield, href: '/docs/terms' },
     { title: 'Privacy', icon: Eye, href: '/docs/privacy' },
+    {
+      title: 'Discord Server',
+      icon: (props: React.ComponentProps<'svg'>) => (
+        <FontAwesomeIcon icon={faDiscord} {...(props as any)} />
+      ),
+      href: 'https://discord.gg/qPSTxSMppf',
+    },
   ]
 
   return (
@@ -98,12 +93,10 @@ function SidebarNav() {
 
       <SidebarFooter>
         {user ? (
-          <Link to="/customization" onClick={() => setOpen(false)} className="w-full">
-            <SidebarMenuButton>
-              <Settings className="h-4 w-4" />
-              <span className="ml-3">Settings</span>
-            </SidebarMenuButton>
-          </Link>
+          <SidebarMenuButton onClick={handleLogout}>
+            <LogOut className="h-4 w-4" />
+            <span className="ml-3">Logout</span>
+          </SidebarMenuButton>
         ) : (
           <Link to="/auth" onClick={() => setOpen(false)} className="w-full">
             <Button className="w-full bg-accent hover:bg-accent/90">
@@ -119,6 +112,22 @@ function SidebarNav() {
 function HomeContent() {
   const { user } = useAuth()
   const { setOpen } = useSidebar()
+  const [userSlug, setUserSlug] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (user) {
+      fetchUserProfile()
+    }
+  }, [user])
+
+  const fetchUserProfile = async () => {
+    try {
+      const response = await api.get('/profiles/me')
+      setUserSlug(response.data.slug)
+    } catch (error) {
+      console.error('Failed to fetch user profile:', error)
+    }
+  }
 
   return (
     <div className="flex-1 min-h-screen bg-background">
@@ -137,7 +146,7 @@ function HomeContent() {
         <div className="ml-auto flex items-center gap-2">
           {user ? (
             <Button variant="ghost" size="sm" asChild>
-              <Link to="/customization">Settings</Link>
+              <Link to={`/profile/${userSlug}`}>Your Profile</Link>
             </Button>
           ) : (
             <Button size="sm" className="bg-accent hover:bg-accent/90" asChild>
@@ -150,10 +159,6 @@ function HomeContent() {
       {/* Hero */}
       <section className="py-24 px-6">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 text-accent text-sm mb-6">
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>Portfolio platform for creators</span>
-          </div>
           
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
             Your work deserves<br />a better home
@@ -168,11 +173,6 @@ function HomeContent() {
               <Link to="/discover">
                 Explore creators
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link to={user ? '/customization' : '/auth'}>
-                {user ? 'Your profile' : 'Start free'}
               </Link>
             </Button>
           </div>
@@ -235,7 +235,7 @@ function HomeContent() {
       <footer className="py-8 px-6 border-t border-border/40">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Starlit
+            © {new Date().getFullYear()} Starlit - Lighting Your Way
           </p>
           <div className="flex gap-6 text-sm text-muted-foreground">
             <Link to="/docs/terms" className="hover:text-foreground transition-colors">Terms</Link>

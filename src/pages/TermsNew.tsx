@@ -7,7 +7,7 @@ const TermsNew = () => {
       title="Terms of Service"
       subtitle="Please read these terms carefully before using our services"
       breadcrumb="Terms"
-      lastUpdated="October 12, 2025"
+      lastUpdated="January 14th, 2026"
     >
       <div 
         className="rounded-xl p-8 border"
