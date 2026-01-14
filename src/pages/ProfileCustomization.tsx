@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { 
   Save, User, Image, Music, MousePointer,
   Settings, Palette, Square, FileText, Clock,
-  LayoutGrid, Sparkles, Eye, MessageSquare, Move
+  LayoutGrid, Sparkles, Eye, MessageSquare, Move,
+  Link2, Gamepad2
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -101,6 +102,15 @@ interface CustomizationState {
   
   customCursor: string
   customPointerCursor: string
+  
+  // Integrations
+  discordUserId: string
+  robloxUserId: string
+  steamId: string
+  spotifyUsername: string
+  twitchUsername: string
+  youtubeChannelId: string
+  youtubeChannelName: string
 }
 
 const defaultCustomization: CustomizationState = {
@@ -161,6 +171,15 @@ const defaultCustomization: CustomizationState = {
   
   customCursor: '',
   customPointerCursor: '',
+  
+  // Integrations
+  discordUserId: '',
+  robloxUserId: '',
+  steamId: '',
+  spotifyUsername: '',
+  twitchUsername: '',
+  youtubeChannelId: '',
+  youtubeChannelName: '',
 }
 
 export default function ProfileCustomization() {
@@ -695,6 +714,67 @@ export default function ProfileCustomization() {
                 />
               </SettingRow>
             )}
+          </SectionCard>
+
+          {/* Integrations */}
+          <SectionCard>
+            <SectionHeader icon={Link2} title="Integrations" />
+            
+            <SettingRow label="Discord User ID" tooltip="Your Discord user ID (right-click profile > Copy ID)">
+              <Input
+                value={customization.discordUserId}
+                onChange={(e) => updateField('discordUserId', e.target.value)}
+                placeholder="123456789012345678"
+                className="max-w-[220px] font-mono text-sm"
+              />
+            </SettingRow>
+            
+            <SettingRow label="Roblox User ID" tooltip="Your Roblox user ID from your profile URL">
+              <Input
+                value={customization.robloxUserId}
+                onChange={(e) => updateField('robloxUserId', e.target.value)}
+                placeholder="1234567890"
+                className="max-w-[220px] font-mono text-sm"
+              />
+            </SettingRow>
+            
+            <SettingRow label="Steam ID" tooltip="Your Steam ID or custom URL name">
+              <Input
+                value={customization.steamId}
+                onChange={(e) => updateField('steamId', e.target.value)}
+                placeholder="76561198012345678"
+                className="max-w-[220px] font-mono text-sm"
+              />
+            </SettingRow>
+            
+            <SettingRow label="Spotify Username">
+              <Input
+                value={customization.spotifyUsername}
+                onChange={(e) => updateField('spotifyUsername', e.target.value)}
+                placeholder="yourusername"
+                className="max-w-[220px]"
+              />
+            </SettingRow>
+            
+            <SettingRow label="Twitch Username">
+              <Input
+                value={customization.twitchUsername}
+                onChange={(e) => updateField('twitchUsername', e.target.value)}
+                placeholder="yourusername"
+                className="max-w-[220px]"
+              />
+            </SettingRow>
+            
+            <SettingRow label="YouTube Channel" tooltip="Channel ID or @username">
+              <div className="flex gap-2">
+                <Input
+                  value={customization.youtubeChannelName}
+                  onChange={(e) => updateField('youtubeChannelName', e.target.value)}
+                  placeholder="@username"
+                  className="max-w-[140px]"
+                />
+              </div>
+            </SettingRow>
           </SectionCard>
 
           {/* Layout/Theme */}

@@ -11,7 +11,13 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from '@/components/ui/carousel'
 import { LoadingScreen } from '@/components/LoadingScreen'
 import { DiscordWidget } from '@/components/profile/DiscordWidget'
+import { DiscordUserWidget } from '@/components/profile/DiscordUserWidget'
 import { GitHubCard } from '@/components/profile/GitHubCard'
+import { RobloxWidget } from '@/components/profile/RobloxWidget'
+import { SteamWidget } from '@/components/profile/SteamWidget'
+import { SpotifyWidget } from '@/components/profile/SpotifyWidget'
+import { TwitchWidget } from '@/components/profile/TwitchWidget'
+import { YouTubeWidget } from '@/components/profile/YouTubeWidget'
 import { BackgroundEffect } from '@/components/profile/BackgroundEffect'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/hooks/use-toast'
@@ -62,6 +68,14 @@ interface Customization {
   audioVolume?: boolean
   forceEnterScreen?: boolean
   allowFeedback?: boolean
+  // Integrations
+  discordUserId?: string
+  robloxUserId?: string
+  steamId?: string
+  spotifyUsername?: string
+  twitchUsername?: string
+  youtubeChannelId?: string
+  youtubeChannelName?: string
 }
 
 interface Profile {
@@ -584,22 +598,57 @@ export default function Profile() {
               </Card>
             )}
 
-            {/* Widgets Row - Discord & GitHub */}
-            <div className="grid md:grid-cols-2 gap-4 animate-fade-up" style={{ animationDelay: '0.1s' }}>
-              {profile.github && (
-                <GitHubCard
-                  username={profile.github}
-                  displayName={profile.displayName || profile.name}
-                  accentColor={accentColor}
-                />
-              )}
-              <DiscordWidget
-                serverName="Starlit Community"
-                onlineCount={654}
-                memberCount={2600}
-                accentColor="#5865F2"
-              />
-            </div>
+            {/* Integrations Widgets */}
+            {(c.discordUserId || c.robloxUserId || c.steamId || c.spotifyUsername || c.twitchUsername || c.youtubeChannelName || profile.github) && (
+              <div className="space-y-4 animate-fade-up" style={{ animationDelay: '0.1s' }}>
+                <h3 className="text-xl font-semibold" style={{ color: textColor }}>Integrations</h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {profile.github && (
+                    <GitHubCard
+                      username={profile.github}
+                      displayName={profile.displayName || profile.name}
+                      accentColor={accentColor}
+                    />
+                  )}
+                  {c.discordUserId && (
+                    <DiscordUserWidget
+                      userId={c.discordUserId}
+                      accentColor="#5865F2"
+                    />
+                  )}
+                  {c.robloxUserId && (
+                    <RobloxWidget
+                      userId={c.robloxUserId}
+                      accentColor="#00A2FF"
+                    />
+                  )}
+                  {c.steamId && (
+                    <SteamWidget
+                      steamId={c.steamId}
+                      accentColor="#1b2838"
+                    />
+                  )}
+                  {c.spotifyUsername && (
+                    <SpotifyWidget
+                      username={c.spotifyUsername}
+                      accentColor="#1DB954"
+                    />
+                  )}
+                  {c.twitchUsername && (
+                    <TwitchWidget
+                      username={c.twitchUsername}
+                      accentColor="#9146FF"
+                    />
+                  )}
+                  {c.youtubeChannelName && (
+                    <YouTubeWidget
+                      channelName={c.youtubeChannelName}
+                      accentColor="#FF0000"
+                    />
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Tools & Skills */}
             {profile.tools && profile.tools.length > 0 && (
