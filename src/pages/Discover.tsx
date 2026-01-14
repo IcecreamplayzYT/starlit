@@ -238,47 +238,47 @@ export default function Discover() {
   }
 
   return (
-    <div className="min-h-screen pt-20 px-4 pb-12">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen pt-24 px-4">
+      <div className="container mx-auto py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Discover</h1>
-          <p className="text-muted-foreground">
-            Find designers, developers, and artists
+        <div className="text-center mb-8 animate-fade-in">
+          <h1 className="text-4xl font-bold mb-4 text-gradient">Discover Creators</h1>
+          <p className="text-xl text-muted-foreground">
+            Find talented designers, developers, and artists
           </p>
         </div>
 
-        {/* Search & Filter */}
-        <div className="mb-6 space-y-3">
-          <div className="flex gap-3">
+        {/* Search & Filter Bar */}
+        <div className="max-w-4xl mx-auto mb-8 space-y-4">
+          <div className="flex gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search..."
-                className="pl-9"
+                placeholder="Search by name, role, or tools..."
+                className="pl-10"
               />
             </div>
             <Button
-              variant={showFilters ? 'default' : 'outline'}
+              variant={showFilters ? 'glow' : 'outline'}
               onClick={() => setShowFilters(!showFilters)}
-              className="shrink-0"
             >
               <Filter className="h-4 w-4 mr-2" />
               Filters
             </Button>
           </div>
 
+          {/* Filters Panel */}
           {showFilters && (
-            <div className="p-4 border border-border rounded-md bg-card space-y-3">
-              <div className="grid md:grid-cols-2 gap-3">
+            <div className="p-4 border border-border rounded-lg bg-card space-y-4 animate-fade-in">
+              <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1.5">Role</label>
+                  <label className="block text-sm font-medium mb-2">Role</label>
                   <select
                     value={selectedRole}
                     onChange={(e) => { setSelectedRole(e.target.value); setPage(1); }}
-                    className="w-full h-9 px-3 rounded-md border border-border bg-background text-sm"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-border bg-background"
                   >
                     <option value="">All Roles</option>
                     {availableRoles.map(role => (
@@ -287,11 +287,11 @@ export default function Discover() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1.5">Tool</label>
+                  <label className="block text-sm font-medium mb-2">Tool</label>
                   <select
                     value={selectedTool}
                     onChange={(e) => { setSelectedTool(e.target.value); setPage(1); }}
-                    className="w-full h-9 px-3 rounded-md border border-border bg-background text-sm"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-border bg-background"
                   >
                     <option value="">All Tools</option>
                     {availableTools.map(tool => (
@@ -302,7 +302,7 @@ export default function Discover() {
               </div>
               {(selectedRole || selectedTool || searchQuery) && (
                 <Button variant="ghost" size="sm" onClick={clearFilters}>
-                  Clear filters
+                  Clear all filters
                 </Button>
               )}
             </div>
@@ -310,81 +310,75 @@ export default function Discover() {
         </div>
 
         {/* Category Tabs */}
-        <div className="flex flex-wrap gap-2 mb-6">
+        <div className="flex flex-wrap justify-center gap-2 mb-8">
           {CATEGORIES.map(cat => {
             const Icon = cat.icon
             return (
-              <button
+              <Button
                 key={cat.id}
+                variant={category === cat.id ? 'glow' : 'outline'}
+                size="sm"
                 onClick={() => { setCategory(cat.id); setPage(1); }}
-                className={`inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                  category === cat.id 
-                    ? 'bg-accent text-accent-foreground' 
-                    : 'bg-muted text-muted-foreground hover:text-foreground'
-                }`}
               >
-                <Icon className="h-3.5 w-3.5 mr-1.5" />
+                <Icon className="h-4 w-4 mr-2" />
                 {cat.label}
-              </button>
+              </Button>
             )
           })}
         </div>
 
-        {/* Active Filters */}
+        {/* Active Filters Display */}
         {(selectedRole || selectedTool) && (
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="flex flex-wrap gap-2 justify-center mb-6">
             {selectedRole && (
-              <span 
-                className="inline-flex items-center px-2.5 py-1 rounded-md bg-muted text-sm cursor-pointer hover:bg-muted/80"
-                onClick={() => setSelectedRole('')}
-              >
-                {selectedRole} ×
-              </span>
+              <Badge variant="secondary" className="cursor-pointer" onClick={() => setSelectedRole('')}>
+                Role: {selectedRole} ×
+              </Badge>
             )}
             {selectedTool && (
-              <span 
-                className="inline-flex items-center px-2.5 py-1 rounded-md bg-muted text-sm cursor-pointer hover:bg-muted/80"
-                onClick={() => setSelectedTool('')}
-              >
-                {selectedTool} ×
-              </span>
+              <Badge variant="secondary" className="cursor-pointer" onClick={() => setSelectedTool('')}>
+                Tool: {selectedTool} ×
+              </Badge>
             )}
           </div>
         )}
 
         {/* Results */}
         {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="h-8 w-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+          <div className="flex items-center justify-center py-12">
+            <div className="text-center">
+              <div className="animate-spin h-12 w-12 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Loading profiles...</p>
+            </div>
           </div>
         ) : profiles.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-muted-foreground">No profiles found</p>
+          <div className="text-center py-12 animate-fade-in">
+            <p className="text-xl text-muted-foreground mb-4">No profiles found</p>
+            <p className="text-muted-foreground">Try adjusting your filters or search</p>
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-fade-in">
               {profiles.map((profile) => (
                 <ProfileCard key={profile._id} profile={profile} />
               ))}
             </div>
 
+            {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-3 mt-8">
+              <div className="flex justify-center gap-2 mt-8">
                 <Button
                   variant="outline"
-                  size="sm"
                   disabled={page === 1}
                   onClick={() => setPage(p => p - 1)}
                 >
                   Previous
                 </Button>
-                <span className="text-sm text-muted-foreground">
-                  {page} / {totalPages}
+                <span className="flex items-center px-4 text-muted-foreground">
+                  Page {page} of {totalPages}
                 </span>
                 <Button
                   variant="outline"
-                  size="sm"
                   disabled={page === totalPages}
                   onClick={() => setPage(p => p + 1)}
                 >
