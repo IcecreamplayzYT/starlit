@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import {
   ArrowRight,
@@ -8,18 +7,14 @@ import {
   Crown,
   Home,
   Compass,
-  Users,
-  Star,
   FileText,
   Settings,
   ChevronLeft,
-  ChevronRight,
-  Zap,
   Shield,
   Palette,
+  Menu,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 import { useAuth } from '@/hooks/useAuth'
 import {
   Sidebar,
@@ -38,7 +33,7 @@ import {
 function SidebarNav() {
   const location = useLocation()
   const { user } = useAuth()
-  const { open, setOpen, collapsed } = useSidebar()
+  const { open, setOpen } = useSidebar()
 
   const mainNav = [
     { title: 'Home', icon: Home, href: '/' },
@@ -53,35 +48,30 @@ function SidebarNav() {
   ]
 
   return (
-    <Sidebar className="border-r border-border/50">
+    <Sidebar>
       <SidebarHeader>
-        {/* Logo - click to toggle sidebar */}
-        <button 
-          onClick={() => setOpen(!open)} 
-          className="flex items-center gap-3 hover:opacity-80 transition-opacity"
-        >
+        <Link to="/" className="flex items-center gap-3">
           <img src="/star.png" alt="Starlit" className="h-8 w-8" />
-          {!collapsed && <span className="text-xl font-bold text-gradient">starlit</span>}
-        </button>
-        {/* Arrow toggle */}
+          <span className="text-xl font-semibold">starlit</span>
+        </Link>
         <button
-          onClick={() => setOpen(!open)}
-          className="ml-auto p-1.5 rounded-lg hover:bg-accent/10 transition-colors"
+          onClick={() => setOpen(false)}
+          className="ml-auto p-1.5 rounded-md hover:bg-muted transition-colors"
         >
-          {open ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+          <ChevronLeft className="h-4 w-4" />
         </button>
       </SidebarHeader>
 
       <SidebarContent>
         <SidebarGroup>
-          {!collapsed && <SidebarGroupLabel>Navigation</SidebarGroupLabel>}
+          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarMenu>
             {mainNav.map((item) => (
               <SidebarMenuItem key={item.href}>
-                <Link to={item.href} className="w-full">
+                <Link to={item.href} onClick={() => setOpen(false)} className="w-full">
                   <SidebarMenuButton isActive={location.pathname === item.href}>
-                    <item.icon className="h-4 w-4 shrink-0" />
-                    {!collapsed && <span className="ml-3">{item.title}</span>}
+                    <item.icon className="h-4 w-4" />
+                    <span className="ml-3">{item.title}</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
@@ -90,14 +80,14 @@ function SidebarNav() {
         </SidebarGroup>
 
         <SidebarGroup className="mt-6">
-          {!collapsed && <SidebarGroupLabel>Resources</SidebarGroupLabel>}
+          <SidebarGroupLabel>Resources</SidebarGroupLabel>
           <SidebarMenu>
             {resourceNav.map((item) => (
               <SidebarMenuItem key={item.href}>
-                <Link to={item.href} className="w-full">
+                <Link to={item.href} onClick={() => setOpen(false)} className="w-full">
                   <SidebarMenuButton isActive={location.pathname === item.href}>
-                    <item.icon className="h-4 w-4 shrink-0" />
-                    {!collapsed && <span className="ml-3">{item.title}</span>}
+                    <item.icon className="h-4 w-4" />
+                    <span className="ml-3">{item.title}</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
@@ -108,23 +98,17 @@ function SidebarNav() {
 
       <SidebarFooter>
         {user ? (
-          <Link to="/customization" className="w-full">
+          <Link to="/customization" onClick={() => setOpen(false)} className="w-full">
             <SidebarMenuButton>
-              <Settings className="h-4 w-4 shrink-0" />
-              {!collapsed && <span className="ml-3">Settings</span>}
+              <Settings className="h-4 w-4" />
+              <span className="ml-3">Settings</span>
             </SidebarMenuButton>
           </Link>
         ) : (
-          <Link to="/auth" className="w-full">
-            {collapsed ? (
-              <SidebarMenuButton>
-                <Zap className="h-4 w-4 shrink-0" />
-              </SidebarMenuButton>
-            ) : (
-              <Button variant="glow" size="sm" className="w-full">
-                Get Started
-              </Button>
-            )}
+          <Link to="/auth" onClick={() => setOpen(false)} className="w-full">
+            <Button className="w-full bg-accent hover:bg-accent/90">
+              Get Started
+            </Button>
           </Link>
         )}
       </SidebarFooter>
@@ -134,144 +118,129 @@ function SidebarNav() {
 
 function HomeContent() {
   const { user } = useAuth()
-  const { open } = useSidebar()
-
-  const features = [
-    {
-      icon: Palette,
-      title: 'Beautiful Profiles',
-      description: 'Create stunning, fully customizable portfolios that showcase your unique style.',
-      gradient: 'from-blue-500 to-blue-600',
-    },
-    {
-      icon: Search,
-      title: 'Easy Discovery',
-      description: 'Get found by clients and collaborators actively seeking your expertise.',
-      gradient: 'from-blue-400 to-blue-500',
-    },
-    {
-      icon: Eye,
-      title: 'Simple Sharing',
-      description: 'Share your work effortlessly with custom URLs and integrated social features.',
-      gradient: 'from-blue-600 to-blue-700',
-    },
-  ]
+  const { setOpen } = useSidebar()
 
   return (
-    <div className={`flex-1 min-h-screen transition-all duration-300 ${open ? 'lg:ml-0' : ''}`}>
-      {/* Hero Section */}
-      <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
-        {/* Background effects */}
-        <div className="absolute inset-0 bg-gradient-hero" />
-        <div className="absolute top-20 left-20 w-64 h-64 bg-gradient-orb animate-float opacity-30" />
-        <div className="absolute bottom-20 right-20 w-48 h-48 bg-gradient-orb animate-float opacity-20" style={{ animationDelay: '3s' }} />
-        <div className="absolute inset-0 bg-grid opacity-30" />
-
-        <div className="container relative z-10 px-6 text-center">
-          {/* Logo */}
-          <div className="mb-8 animate-fade-up">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50 glow-blue">
-              <img src="/star.png" alt="Starlit" className="h-12 w-12" />
-            </div>
-          </div>
-
-          {/* Headline */}
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 animate-fade-up" style={{ animationDelay: '0.1s' }}>
-            <span className="text-gradient">starlit</span>
-          </h1>
-
-          {/* Tagline */}
-          <div className="flex items-center justify-center gap-3 mb-10 animate-fade-up" style={{ animationDelay: '0.2s' }}>
-            <Sparkles className="h-5 w-5 text-accent" />
-            <p className="text-xl text-muted-foreground">Lighting Your Way</p>
-            <Sparkles className="h-5 w-5 text-accent" />
-          </div>
-
-          {/* CTA */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up" style={{ animationDelay: '0.3s' }}>
-            <Button variant="glow" size="lg" asChild className="group">
-              <Link to="/discover">
-                Explore Creators
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
+    <div className="flex-1 min-h-screen bg-background">
+      {/* Top bar */}
+      <header className="sticky top-0 z-30 h-14 border-b border-border/40 bg-background/80 backdrop-blur-sm flex items-center px-4">
+        <button
+          onClick={() => setOpen(true)}
+          className="p-2 -ml-2 rounded-md hover:bg-muted transition-colors"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+        <Link to="/" className="flex items-center gap-2 ml-3">
+          <img src="/star.png" alt="Starlit" className="h-6 w-6" />
+          <span className="font-semibold">starlit</span>
+        </Link>
+        <div className="ml-auto flex items-center gap-2">
+          {user ? (
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/customization">Settings</Link>
             </Button>
-            <Button variant="outline" size="lg" asChild>
-              <Link to={user ? '/discover' : '/auth'}>
-                {user ? 'View Profile' : 'Get Started'}
-              </Link>
+          ) : (
+            <Button size="sm" className="bg-accent hover:bg-accent/90" asChild>
+              <Link to="/auth">Get Started</Link>
             </Button>
-          </div>
+          )}
         </div>
-      </section>
+      </header>
 
-      {/* Features Section */}
+      {/* Hero */}
       <section className="py-24 px-6">
-        <div className="container">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">
-              Why Choose <span className="text-gradient">Starlit</span>?
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Everything you need to showcase your creative work and connect with opportunities.
-            </p>
+        <div className="max-w-3xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 text-accent text-sm mb-6">
+            <Sparkles className="h-3.5 w-3.5" />
+            <span>Portfolio platform for creators</span>
           </div>
+          
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+            Your work deserves<br />a better home
+          </h1>
+          
+          <p className="text-lg text-muted-foreground mb-10 max-w-xl mx-auto">
+            Create a beautiful portfolio in minutes. Share your creative work with the world.
+          </p>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <Card
-                key={feature.title}
-                className="group p-8 text-center hover-lift card-interactive animate-fade-up"
-                style={{ animationDelay: `${0.1 * (index + 1)}s` }}
-              >
-                <CardContent className="p-0 space-y-4">
-                  <div className={`w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
-                    <feature.icon className="h-8 w-8 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-semibold">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button size="lg" className="bg-accent hover:bg-accent/90" asChild>
+              <Link to="/discover">
+                Explore creators
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <Link to={user ? '/customization' : '/auth'}>
+                {user ? 'Your profile' : 'Start free'}
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-24 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-hero" />
-        <div className="container relative z-10 text-center">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-4xl font-bold mb-6">
-              Ready to <span className="text-gradient">shine</span>?
-            </h2>
-            <p className="text-xl text-muted-foreground mb-10">
-              Join thousands of creatives already using Starlit. Upgrade to Premium for exclusive features.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button variant="glow" size="lg" asChild className="group">
-                <Link to={user ? '/discover' : '/auth'}>
-                  Get Started Today
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </Button>
-              <Button variant="outline" size="lg" asChild>
-                <Link to="/premium" className="flex items-center">
-                  <Crown className="mr-2 h-5 w-5 text-yellow-500" />
-                  Become Premium
-                </Link>
-              </Button>
+      {/* Features */}
+      <section className="py-20 px-6 border-t border-border/40">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="p-6 rounded-lg border border-border/40 bg-card/50">
+              <Palette className="h-8 w-8 text-accent mb-4" />
+              <h3 className="text-lg font-semibold mb-2">Customizable</h3>
+              <p className="text-muted-foreground text-sm">
+                Make your profile truly yours with themes, colors, and layouts.
+              </p>
             </div>
+            <div className="p-6 rounded-lg border border-border/40 bg-card/50">
+              <Search className="h-8 w-8 text-accent mb-4" />
+              <h3 className="text-lg font-semibold mb-2">Discoverable</h3>
+              <p className="text-muted-foreground text-sm">
+                Get found by clients and collaborators looking for talent.
+              </p>
+            </div>
+            <div className="p-6 rounded-lg border border-border/40 bg-card/50">
+              <Eye className="h-8 w-8 text-accent mb-4" />
+              <h3 className="text-lg font-semibold mb-2">Shareable</h3>
+              <p className="text-muted-foreground text-sm">
+                One link to share all your work across platforms.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-20 px-6 border-t border-border/40">
+        <div className="max-w-2xl mx-auto text-center">
+          <h2 className="text-3xl font-bold mb-4">Ready to get started?</h2>
+          <p className="text-muted-foreground mb-8">
+            Join creators already using Starlit to showcase their work.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button size="lg" className="bg-accent hover:bg-accent/90" asChild>
+              <Link to={user ? '/discover' : '/auth'}>
+                {user ? 'Browse creators' : 'Create your profile'}
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <Link to="/premium" className="flex items-center">
+                <Crown className="mr-2 h-4 w-4 text-yellow-500" />
+                Go Premium
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 border-t border-border/50">
-        <div className="container text-center">
-          <p className="text-muted-foreground">
-            © {new Date().getFullYear()} Starlit. Lighting Your Way.
+      <footer className="py-8 px-6 border-t border-border/40">
+        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-sm text-muted-foreground">
+            © {new Date().getFullYear()} Starlit
           </p>
+          <div className="flex gap-6 text-sm text-muted-foreground">
+            <Link to="/docs/terms" className="hover:text-foreground transition-colors">Terms</Link>
+            <Link to="/docs/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
+          </div>
         </div>
       </footer>
     </div>
