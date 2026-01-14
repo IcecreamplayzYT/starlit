@@ -43,30 +43,27 @@ export function Sidebar({ children, className, ...props }: SidebarProps) {
 
   return (
     <>
-      {/* Mobile overlay - click to close */}
+      {/* Overlay - click to close */}
       {open && (
         <div 
-          className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm"
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
           onClick={() => setOpen(false)}
         />
       )}
       
-      {/* Sidebar */}
+      {/* Sidebar - slides in/out completely */}
       <aside
         className={cn(
-          'fixed left-0 top-0 z-50 h-screen bg-card border-r border-border/50 transition-all duration-300 flex flex-col',
-          open ? 'w-64' : 'w-16',
+          'fixed left-0 top-0 z-50 h-screen w-64 bg-card/95 backdrop-blur-md border-r border-border/30 transition-transform duration-300 flex flex-col',
+          open ? 'translate-x-0' : '-translate-x-full',
           className
         )}
         {...props}
       >
-        <div className={cn('flex flex-col h-full overflow-hidden', !open && 'items-center')}>
+        <div className="flex flex-col h-full overflow-hidden">
           {children}
         </div>
       </aside>
-
-      {/* Spacer to push content */}
-      <div className={cn('shrink-0 transition-all duration-300', open ? 'w-64' : 'w-16')} />
     </>
   )
 }
