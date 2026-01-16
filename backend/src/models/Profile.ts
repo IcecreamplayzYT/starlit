@@ -406,7 +406,7 @@ const profileSchema = new mongoose.Schema({
     // General Settings
     avatarRadius: { type: Number, default: 50, min: 0, max: 100 },
     profileOpacity: { type: Number, default: 100, min: 0, max: 100 },
-    profileBlur: { type: Number, default: 0, min: 0, max: 20 },
+    profileBlur: { type: Number, default: 0, min: 0, max: 100 },
     backgroundEffect: { type: String, enum: ['none', 'particles', 'snow', 'rain', 'stars'], default: 'none' },
     usernameEffect: { type: String, enum: ['none', 'glow', 'rainbow', 'typing', 'wave'], default: 'none' },
     enterText: { type: String, maxlength: 50 },
@@ -424,7 +424,7 @@ const profileSchema = new mongoose.Schema({
     // Border Settings
     borderEnabled: { type: Boolean, default: false },
     borderColor: { type: String, default: '#3B82F6' },
-    borderRadius: { type: Number, default: 16, min: 0, max: 50 },
+    borderRadius: { type: Number, default: 16, min: 0, max: 100 },
 
     // About Me Settings
     aboutMeEnabled: { type: Boolean, default: true },

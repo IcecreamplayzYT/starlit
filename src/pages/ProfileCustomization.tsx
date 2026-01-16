@@ -374,7 +374,8 @@ export default function ProfileCustomization() {
                 value={customization.avatarRadius}
                 onChange={(v) => updateField('avatarRadius', v)}
                 min={0}
-                max={50}
+                max={100}
+                step={1}
                 defaultValue={50}
                 suffix="%"
               />
@@ -384,8 +385,9 @@ export default function ProfileCustomization() {
               <Slider
                 value={customization.profileOpacity}
                 onChange={(v) => updateField('profileOpacity', v)}
-                min={50}
+                min={0}
                 max={100}
+                step={1}
                 defaultValue={100}
                 suffix="%"
               />
@@ -396,7 +398,8 @@ export default function ProfileCustomization() {
                 value={customization.profileBlur}
                 onChange={(v) => updateField('profileBlur', v)}
                 min={0}
-                max={20}
+                max={100}
+                step={1}
                 defaultValue={0}
                 suffix="px"
               />
@@ -523,7 +526,8 @@ export default function ProfileCustomization() {
                     value={customization.borderRadius}
                     onChange={(v) => updateField('borderRadius', v)}
                     min={0}
-                    max={50}
+                    max={100}
+                    step={1}
                     defaultValue={16}
                     suffix="px"
                   />

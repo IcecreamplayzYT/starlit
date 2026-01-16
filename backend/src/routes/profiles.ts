@@ -372,7 +372,7 @@ const createProfileSchema = z.object({
       // General Settings
       avatarRadius: z.number().min(0).max(100).optional(),
       profileOpacity: z.number().min(0).max(100).optional(),
-      profileBlur: z.number().min(0).max(20).optional(),
+      profileBlur: z.number().min(0).max(100).optional(),
       backgroundEffect: z.enum(['none', 'particles', 'snow', 'rain', 'stars']).optional(),
       usernameEffect: z.enum(['none', 'glow', 'rainbow', 'typing', 'wave']).optional(),
       enterText: z.string().max(50).optional(),
@@ -390,7 +390,7 @@ const createProfileSchema = z.object({
       // Border Settings
       borderEnabled: z.boolean().optional(),
       borderColor: z.string().optional(),
-      borderRadius: z.number().min(0).max(50).optional(),
+      borderRadius: z.number().min(0).max(100).optional(),
 
       // About Me Settings
       aboutMeEnabled: z.boolean().optional(),

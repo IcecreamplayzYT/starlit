@@ -39,7 +39,7 @@ export function Slider({
 
   return (
     <div className={cn("flex items-center gap-3", className)}>
-      <div className="relative flex-1 h-2">
+      <div className="relative flex-1 min-w-[200px] h-4">
         <div className="absolute inset-0 bg-muted rounded-full" />
         <div
           className="absolute inset-y-0 left-0 bg-accent rounded-full transition-all"
@@ -56,8 +56,8 @@ export function Slider({
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
         />
         <div
-          className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-accent rounded-full shadow-lg border-2 border-background pointer-events-none transition-all"
-          style={{ left: `calc(${percentage}% - 8px)` }}
+          className="absolute top-1/2 -translate-y-1/2 w-5 h-5 bg-accent rounded-full shadow-lg border-2 border-background pointer-events-none transition-all"
+          style={{ left: `calc(${percentage}% - 10px)` }}
         />
       </div>
       
