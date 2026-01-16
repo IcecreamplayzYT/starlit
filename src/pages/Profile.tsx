@@ -15,6 +15,7 @@ import { SpotifyWidget } from '@/components/profile/SpotifyWidget'
 import { TwitchWidget } from '@/components/profile/TwitchWidget'
 import { YouTubeWidget } from '@/components/profile/YouTubeWidget'
 import { BackgroundEffect } from '@/components/profile/BackgroundEffect'
+import { Markdown } from '@/components/Markdown'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/hooks/use-toast'
 import { api } from '@/lib/api'
@@ -587,9 +588,11 @@ export default function Profile() {
                   {profile.headline && (
                     <p className="mb-4 italic" style={{ color: secondaryTextColor }}>{profile.headline}</p>
                   )}
-                  <p className="leading-relaxed whitespace-pre-wrap" style={{ color: textColor }}>
-                    {c.aboutMeText || c.description || profile.bio || profile.description}
-                  </p>
+                  <div className="leading-relaxed" style={{ color: textColor }}>
+                    <Markdown>
+                      {String(c.aboutMeText || c.description || profile.bio || profile.description || '')}
+                    </Markdown>
+                  </div>
                 </CardContent>
               </Card>
             )}
@@ -743,9 +746,11 @@ export default function Profile() {
                         </h3>
                         
                         {project.description && (
-                          <p className="text-sm mb-4 line-clamp-2" style={{ color: secondaryTextColor }}>
-                            {project.description}
-                          </p>
+                          <div className="text-sm mb-4 line-clamp-2" style={{ color: secondaryTextColor }}>
+                            <Markdown inline>
+                              {String(project.description)}
+                            </Markdown>
+                          </div>
                         )}
                         
                         {project.externalLink && (

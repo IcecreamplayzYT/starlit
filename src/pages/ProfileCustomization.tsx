@@ -23,6 +23,7 @@ import { AvatarManagerModal } from '@/components/customization/AvatarManagerModa
 import { BackgroundManagerModal } from '@/components/customization/BackgroundManagerModal'
 import { AudioManagerModal } from '@/components/customization/AudioManagerModal'
 import { CursorManagerModal } from '@/components/customization/CursorManagerModal'
+import { Markdown } from '@/components/Markdown'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/hooks/use-toast'
 import { api } from '@/lib/api'
@@ -361,7 +362,7 @@ export default function ProfileCustomization() {
                   placeholder="Tell visitors about yourself..."
                   maxLength={500}
                   rows={3}
-                  className="resize-none"
+                  className="resize-none text-sm"
                 />
                 <span className="absolute bottom-2 right-2 text-xs text-muted-foreground">
                   {customization.description.length}/500
@@ -563,8 +564,18 @@ export default function ProfileCustomization() {
                   </span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-2">
-                  Supports Markdown: **bold**, *italic*, [links](url), `code`
+                  Supports Markdown: **bold**, *italic*, [links](url), `code`, ~~strikethrough~~, &gt; quotes, - lists, | tables |
                 </p>
+                {customization.aboutMeText && (
+                  <div className="mt-4 p-4 bg-card border border-border rounded-lg">
+                    <p className="text-sm font-medium mb-2 text-muted-foreground">Preview:</p>
+                    <div className="prose prose-sm max-w-none">
+                      <Markdown>
+                        {customization.aboutMeText}
+                      </Markdown>
+                    </div>
+                  </div>
+                )}
               </SettingRow>
             )}
           </SectionCard>

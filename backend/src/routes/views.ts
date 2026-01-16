@@ -62,7 +62,7 @@ router.post('/anonymous', async (req, res) => {
     const { profileId } = req.body;
     
     // For anonymous users, we just track in analytics, not in ProfileView
-    // This prevents manipulation but still shows general interest
+    // keeps things fair but still shows who's interested
     
     const profile = await Profile.findById(profileId);
     if (!profile) {
